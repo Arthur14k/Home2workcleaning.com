@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home2Work Cleaning</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Home2Work Cleaning</h1>
+    <p>Professional Cleaning Services You Can Trust</p>
+  </header>
+
+  <section>
+    <h2>Leave a Review</h2>
+    <form id="reviewForm">
+      <input type="text" id="name" placeholder="Your Name" required />
+      <select id="rating" required>
+        <option value="">Rating</option>
+        <option value="5">★★★★★</option>
+        <option value="4">★★★★</option>
+        <option value="3">★★★</option>
+        <option value="2">★★</option>
+        <option value="1">★</option>
+      </select>
+      <textarea id="comment" placeholder="Your Review" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="successMessage" style="display:none;">Thank you for your review!</div>
+  </section>
+
+  <section>
+    <h2>Customer Reviews</h2>
+    <div id="reviewsContainer">No reviews yet.</div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
