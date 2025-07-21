@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Phone, Mail, MapPin, Clock } from "lucide-react"
+import { Phone, Mail, Clock } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
@@ -87,16 +87,7 @@ export default function ContactPage() {
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
                       <div className="p-2 bg-purple-100 rounded-lg">
-                        <MapPin className="h-6 w-6 text-purple-600" />
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Address</h3>
-                        <p className="text-gray-600 mb-2">Visit our office</p>
-                        <address className="text-gray-700 not-italic">
-                          323 Great Western Street
-                          <br />
-                          Manchester, M14 4AN
-                        </address>
                       </div>
                     </div>
                   </CardContent>
