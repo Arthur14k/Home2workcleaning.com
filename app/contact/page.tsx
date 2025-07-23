@@ -82,17 +82,7 @@ export default function ContactPage() {
                     </div>
                   </CardContent>
                 </Card>
-
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="p-2 bg-purple-100 rounded-lg">
-                      </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
+                
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
