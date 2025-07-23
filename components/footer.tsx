@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Sparkles, Phone, Mail, MapPin, Facebook, Twitter, Instagram } from "lucide-react"
+import { Sparkles, Phone, Mail, Facebook, Twitter, Instagram } from "lucide-react"
 
 export function Footer() {
   return (
@@ -95,14 +95,6 @@ export function Footer() {
                 </a>
               </div>
               <div className="flex items-start space-x-3">
-                <MapPin className="h-5 w-5 text-blue-400 mt-0.5" />
-                <address className="text-gray-300 not-italic">
-                  323 Great Western Street
-                  <br />
-                  Manchester
-                  <br />
-                  M14 4AN
-                </address>
               </div>
             </div>
           </div>
