@@ -18,6 +18,17 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
+      {/* Homepage Hero Section with Background Image */}
+<section
+  className="relative bg-cover bg-center text-white py-32 px-4"
+  style={{ backgroundImage: "url('/images/home-intro.jpg')" }}
+>
+  <div className="absolute inset-0 bg-black opacity-40" />
+  <div className="relative z-10 text-center">
+    <h1 className="text-5xl font-bold mb-4">Professional Cleaning Services</h1>
+    <p className="text-xl">From homes to workplaces, we make every space shine</p>
+  </div>
+</section>
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 to-green-50 py-20 px-4">
