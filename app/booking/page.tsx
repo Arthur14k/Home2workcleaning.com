@@ -327,7 +327,7 @@ export default function BookingPage() {
                     <p className="flex items-center">
                       <Mail className="h-4 w-4 mr-2" />
                       <a href="mailto:info@home2workcleaning.com" className="text-blue-600 hover:text-blue-700">
-                        info@home2workcleaning.com
+                        Contact@home2workcleaning.com
                       </a>
                     </p>
                   </div>
