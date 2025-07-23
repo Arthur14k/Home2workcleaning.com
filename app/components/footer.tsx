@@ -14,7 +14,6 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
           <div className="flex items-start space-x-3">
-            </address>
           </div>
         </div>
 
