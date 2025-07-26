@@ -17,40 +17,40 @@ export const metadata: Metadata = {
 }
 
 import React from "react";
+
 export default function ContactPage() {
   return (
-  <>
-    <div className="min-h-screen bg-white">
-      <Header />
-      {/* Hero Section */}
-      <section className="relative bg-cover bg-center text-white py-24 px-4"
-        style={{
-          backgroundImage: "url('/services-6195125.jpg')",
-        }}
-      >
-        <div className="bg-black/50 p-8 rounded-lg text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Services</h1>
-          <p className="text-xl text-white">
-            Discover our full range of residential and commercial cleaning
+    <>
+      <div className="min-h-screen bg-white">
+        <Header />
+
+        {/* Hero Section */}
+        <section className="relative bg-cover bg-center text-white py-24 px-4"
+          style={{
+            backgroundImage: "url('/services-6195125.jpg')",
+          }}
+        >
+          <div className="bg-black/50 p-8 rounded-lg text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Services</h1>
+            <p className="text-xl text-white">
+              Discover our full range of residential and commercial cleaning
+            </p>
+          </div>
+        </section>
+      </div>
+
+      {/* Contact Section */}
+      <section className="py-16 px-4 bg-gray-50">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Get In Touch</h2>
+          <p className="text-lg text-gray-600 mb-8">
+            Ready to experience the Home2work difference? Contact us today to maintain a spotless space.
           </p>
         </div>
       </section>
-    </div>
-  </>
-);
-      {/* Contact Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Information */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Get In Touch</h2>
-                <p className="text-lg text-gray-600 mb-8">
-                  Ready to experience the Home2work difference? Contact us today for your free quote and let us help you
-                  maintain a spotless space.
-                </p>
-              </div>
+    </>
+  );
+}
 
               <div className="space-y-6">
                 <Card>
