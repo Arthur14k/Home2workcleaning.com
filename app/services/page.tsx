@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   keywords: "house cleaning, office cleaning, deep cleaning, commercial cleaning services, residential cleaning",
 }
 
+import React from "react";
 export default function ServicesPage() {
 return (
   <>
