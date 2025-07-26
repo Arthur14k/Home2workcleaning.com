@@ -22,14 +22,17 @@ export default function ContactPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 to-green-50 py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Contact Us</h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Get in touch for a free consultation and personalized cleaning quote
-          </p>
-        </div>
-      </section>
+      
+  className="relative bg-cover bg-center text-white py-24 px-4"
+  style={{ backgroundImage: "url('/Images/Contact Us-unsplash.jpg')" }}
+>
+  <div className="bg-black/50 p-8 rounded-lg text-center">
+    <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
+    <p className="text-xl mb-8">
+      Get in touch for a free consultation and personalized cleaning quote
+    </p>
+  </div>
+</section>
 
       {/* Contact Section */}
       <section className="py-16 px-4">
