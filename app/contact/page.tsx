@@ -18,21 +18,27 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div>
       <Header />
-
-      {/* Hero Section */}
-      
-  className="relative bg-cover bg-center text-white py-24 px-4"
-  style={{ backgroundImage: "url('/Contact-Us-unsplash.jpg')" }}
->
-  <div className="bg-black/50 p-8 rounded-lg text-center">
-    <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
-    <p className="text-xl mb-8">
-      Get in touch for a free consultation and personalized cleaning quote
-    </p>
-  </div>
-</section>
+      {/* Hero */}
+      <section
+        className="relative bg-cover bg-center text-white py-24 px-4"
+        style={{
+          backgroundImage: "url('/Contact Us-unsplash.jpg')",
+        }}
+      >
+        <div className="bg-black/50 p-8 rounded-lg text-center max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Contact Us
+          </h1>
+          <p className="text-xl text-white">
+            Get in touch for a free consultation and personalized cleaning quote
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+}
 
       {/* Contact Section */}
       <section className="py-16 px-4">
