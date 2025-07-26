@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 
 import React from "react";
 import Header from "@/components/Header";
+
 export default function ContactPage() {
   return (
     <>
@@ -37,21 +38,20 @@ export default function ContactPage() {
             </p>
           </div>
         </section>
-      </div>
 
-      {/* Contact Section */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Get In Touch</h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Ready to experience the Home2work difference? Contact us today to maintain a spotless space.
-          </p>
-        </div>
-      </section>
+        {/* Contact Section */}
+        <section className="py-16 px-4 bg-gray-50">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Get In Touch</h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Ready to experience the Home2work difference? Contact us today to maintain a spotless space.
+            </p>
+          </div>
+        </section>
+      </div>
     </>
   );
 }
-
               <div className="space-y-6">
                 <Card>
                   <CardContent className="p-6">
