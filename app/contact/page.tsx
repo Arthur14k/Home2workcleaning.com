@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     "contact cleaning service, free cleaning quote, professional cleaners contact, cleaning service phone number",
 }
 
+import React from "react";
 export default function ContactPage() {
   return (
   <>
