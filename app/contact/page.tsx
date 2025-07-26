@@ -24,7 +24,7 @@ export default function ContactPage() {
       {/* Hero Section */}
       
   className="relative bg-cover bg-center text-white py-24 px-4"
-  style={{ backgroundImage: "url('/Images/Contact Us-unsplash.jpg')" }}
+  style={{ backgroundImage: "url('/Contact-Us-unsplash.jpg')" }}
 >
   <div className="bg-black/50 p-8 rounded-lg text-center">
     <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
