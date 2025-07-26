@@ -19,14 +19,21 @@ export default function ServicesPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 to-green-50 py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Professional Cleaning Services</h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Comprehensive cleaning solutions tailored to your residential and commercial needs
-          </p>
-        </div>
-      </section>
+     <section
+  className="relative bg-cover bg-center text-white py-24 px-4"
+  style={{
+    backgroundImage: "url('/services-6195125.jpg')",
+  }}
+>
+  <div className="bg-black/50 p-8 rounded-lg text-center max-w-4xl mx-auto">
+    <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+      Our Services
+    </h1>
+    <p className="text-xl text-white">
+      Discover our full range of residential and commercial cleaning solutions
+    </p>
+  </div>
+</</section>
 
       {/* Services Section */}
       <section className="py-16 px-4">
