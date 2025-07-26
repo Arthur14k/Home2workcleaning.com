@@ -33,7 +33,7 @@ export default function HomePage() {
       {/* Hero Section */}
 <section
   className="relative bg-cover bg-center text-white py-24 px-4"
-  style={{ backgroundImage: "url('/Images/Homepage-unsplash.jpg')" }}
+ style={{ backgroundImage: "url('/Homepage-6195278.jpg')" }}
 >
   <div className="bg-black/50 p-8 rounded-lg text-center max-w-6xl mx-auto">
     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
