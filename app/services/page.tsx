@@ -30,11 +30,12 @@ export default function ServicesPage() {
             Our Services
           </h1>
           <p className="text-xl text-white">
-            Discover our full range of residential and commercial cleaning
-            solutions
+          Discover our full range of residential and commercial cleaning
           </p>
         </div>
       </section>
+
+      {/* More sections... */}
     </div>
   );
 }
