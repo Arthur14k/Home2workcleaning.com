@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 }
 
 import React from "react";
-import Header from "@/components/Header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Home, CheckCircle } from "lucide-react";
 
