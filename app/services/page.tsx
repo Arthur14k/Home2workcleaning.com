@@ -15,63 +15,73 @@ export const metadata: Metadata = {
 
 import React from "react";
 import Header from "@/components/Header";
-export default function ServicesPage() {
-return (
-  <>
-    <div className="min-h-screen bg-white">
-      <Header />
-      {/* Hero Section */}
-      <section className="relative bg-cover bg-center text-white py-24 px-4"
-        style={{
-          backgroundImage: "url('/services-6195125.jpg')",
-        }}
-      >
-        <div className="bg-black/50 p-8 rounded-lg text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Services</h1>
-          <p className="text-xl text-white">
-            Discover our full range of residential and commercial cleaning
-          </p>
-        </div>
-      </section>
-    </div>
-  </>
-);
-      {/* Services Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Residential Services */}
-            <Card className="border-2 border-blue-100">
-              <CardHeader className="text-center pb-8">
-                <div className="mx-auto mb-4 p-3 bg-blue-100 rounded-full w-fit">
-                  <Home className="h-8 w-8 text-blue-600" />
-                </div>
-                <CardTitle className="text-3xl font-bold text-gray-900">Residential Cleaning</CardTitle>
-                <p className="text-gray-600 mt-2">Professional home cleaning services for busy families</p>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="text-xl font-semibold mb-3">Regular House Cleaning</h3>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Weekly, bi-weekly, or monthly service</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Kitchen and bathroom deep cleaning</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Dusting, vacuuming, and mopping</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Trash removal and bed making</span>
-                    </li>
-                  </ul>
-                </div>
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Home, CheckCircle } from "lucide-react";
 
+export default function ServicesPage() {
+  return (
+    <>
+      <div className="min-h-screen bg-white">
+        <Header />
+
+        {/* Hero Section */}
+        <section className="relative bg-cover bg-center text-white py-24 px-4"
+          style={{
+            backgroundImage: "url('/services-6195125.jpg')",
+          }}
+        >
+          <div className="bg-black/50 p-8 rounded-lg text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Services</h1>
+            <p className="text-xl text-white">
+              Discover our full range of residential and commercial cleaning
+            </p>
+          </div>
+        </section>
+
+        {/* Services Section */}
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12">
+              {/* Residential Services */}
+              <Card className="border-2 border-blue-100">
+                <CardHeader className="text-center pb-8">
+                  <div className="mx-auto mb-4 p-3 bg-blue-100 rounded-full w-fit">
+                    <Home className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <CardTitle className="text-3xl font-bold text-gray-900">Residential Cleaning</CardTitle>
+                  <p className="text-gray-600 mt-2">Professional home cleaning services for busy families</p>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-3">Regular House Cleaning</h3>
+                    <ul className="space-y-2">
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                        <span>Weekly, bi-weekly, or monthly service</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                        <span>Kitchen and bathroom deep cleaning</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                        <span>Dusting, vacuuming, and mopping</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                        <span>Trash removal and bed making</span>
+                      </li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
+  );
+}
                 <div>
                   <h3 className="text-xl font-semibold mb-3">Deep Cleaning Services</h3>
                   <ul className="space-y-2">
