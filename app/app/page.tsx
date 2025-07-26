@@ -31,25 +31,27 @@ export default function HomePage() {
 </section>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-50 to-green-50 py-20 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Professional Cleaning Services You Can Trust
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            From your home to your workplace, we deliver exceptional cleaning services with attention to detail and
-            eco-friendly solutions.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
-              <Link href="/booking">Book Now</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/services">Our Services</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+<section
+  className="relative bg-cover bg-center text-white py-24 px-4"
+  style={{ backgroundImage: "url('/Images/Homepage-unsplash.jpg')" }}
+>
+  <div className="bg-black/50 p-8 rounded-lg text-center max-w-6xl mx-auto">
+    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+      Professional Cleaning Services You Can Trust
+    </h1>
+    <p className="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto">
+      From your home to your workplace, we deliver exceptional cleaning services with attention to detail and eco-friendly solutions.
+    </p>
+    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+        <Link href="/booking">Book Now</Link>
+      </Button>
+      <Button asChild variant="outline" size="lg">
+        <Link href="/services">Our Services</Link>
+      </Button>
+    </div>
+  </div>
+</section>
 
       {/* Brand Values Section */}
       <section className="py-16 px-4 bg-white">
