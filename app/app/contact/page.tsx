@@ -1,12 +1,13 @@
-import type { Metadata } from "next"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Phone, Mail, Clock } from "lucide-react"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import React from "react";
+import type { Metadata } from "next";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Phone, Mail, Clock } from "lucide-react";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "Contact Us - Home2work Cleaning | Get Your Free Quote Today",
@@ -14,38 +15,45 @@ export const metadata: Metadata = {
     "Contact Home2work Cleaning for professional cleaning services. Call (555) 123-4567 or email us for a free quote. Serving the local area with reliable cleaning solutions.",
   keywords:
     "contact cleaning service, free cleaning quote, professional cleaners contact, cleaning service phone number",
-}
+};
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
+    <>
+      <div className="min-h-screen bg-white">
+        <Header />
 
-      {/* Hero Section with background image */}
-<section
-  className="relative bg-cover bg-center text-white py-32 px-4"
-  style={{ backgroundImage: "url('/images/contact-hero.jpg')" }}
->
-  <div className="absolute inset-0 bg-black opacity-40" />
-  <div className="relative z-10 text-center">
-    <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
-    <p className="text-xl">Get in touch for a free consultation and personalized cleaning quote</p>
-  </div>
-</section>
+        {/* Hero Section */}
+        <section
+          className="relative bg-cover bg-center text-white py-24 px-4"
+          style={{
+            backgroundImage: "url('/contact-anton.jpg')",
+          }}
+        >
+          <div className="bg-black/50 p-8 rounded-lg text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Contact Us</h1>
+            <p className="text-xl text-white">
+              Get in touch for a free consultation and personalized cleaning quote.
+            </p>
+          </div>
+        </section>
 
-      {/* Contact Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Information */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Get In Touch</h2>
-                <p className="text-lg text-gray-600 mb-8">
-                  Ready to experience the Home2work difference? Contact us today for your free quote and let us help you
-                  maintain a spotless space.
-                </p>
-              </div>
+        {/* Contact Section */}
+        <section className="py-16 px-4 bg-gray-50">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Get In Touch</h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Ready to experience the Home2work difference? Contact us today to maintain a spotless space.
+            </p>
+            {/* Contact form or contact details can go here */}
+          </div>
+        </section>
+
+        <Footer />
+      </div>
+    </>
+  );
+}
 
               <div className="space-y-6">
                 <Card>
