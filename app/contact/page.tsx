@@ -18,28 +18,25 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div>
+  <>
+    <div className="min-h-screen bg-white">
       <Header />
-      {/* Hero */}
-      <section
-        className="relative bg-cover bg-center text-white py-24 px-4"
+      {/* Hero Section */}
+      <section className="relative bg-cover bg-center text-white py-24 px-4"
         style={{
-          backgroundImage: "url('/Contact Us-unsplash.jpg')",
+          backgroundImage: "url('/services-6195125.jpg')",
         }}
       >
         <div className="bg-black/50 p-8 rounded-lg text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Contact Us
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Services</h1>
           <p className="text-xl text-white">
-            Get in touch for a free consultation and personalized cleaning quote
+            Discover our full range of residential and commercial cleaning
           </p>
         </div>
       </section>
     </div>
-  );
-}
-
+  </>
+);
       {/* Contact Section */}
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
