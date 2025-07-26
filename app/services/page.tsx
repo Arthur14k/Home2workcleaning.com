@@ -1,21 +1,18 @@
-import type { Metadata } from "next"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { CheckCircle, Home, Building, Sparkles, Clock } from "lucide-react"
-import Link from "next/link"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import React from "react";
+import type { Metadata } from "next";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, Home, Building, Sparkles, Clock } from "lucide-react";
+import Link from "next/link";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "Our Services - Home2work Cleaning | Residential & Commercial Cleaning",
   description:
     "Comprehensive cleaning services including residential house cleaning, commercial office cleaning, deep cleaning, and specialized cleaning solutions.",
   keywords: "house cleaning, office cleaning, deep cleaning, commercial cleaning services, residential cleaning",
-}
-
-import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Home, CheckCircle } from "lucide-react";
+};
 
 export default function ServicesPage() {
   return (
@@ -24,7 +21,8 @@ export default function ServicesPage() {
         <Header />
 
         {/* Hero Section */}
-        <section className="relative bg-cover bg-center text-white py-24 px-4"
+        <section
+          className="relative bg-cover bg-center text-white py-24 px-4"
           style={{
             backgroundImage: "url('/services-6195125.jpg')",
           }}
@@ -74,14 +72,7 @@ export default function ServicesPage() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </div>
-        </section>
-      </div>
-    </>
-  );
-}
-                <div>
+    
                   <h3 className="text-xl font-semibold mb-3">Deep Cleaning Services</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start">
