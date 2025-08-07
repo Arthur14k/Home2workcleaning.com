@@ -19,7 +19,7 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const res = await fetch("/api/contact", {
+    const res = await fetch("/api/send-contact", {
       method: "POST",
       body: JSON.stringify(form),
     });
