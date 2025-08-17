@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.pnpm-store/
+.vercel/
+dist/
+build/
+.DS_Store
+.env*
+.vercel
