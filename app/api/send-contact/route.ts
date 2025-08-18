@@ -1,60 +1,56 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import sgMail from "@sendgrid/mail";
+import { createClient } from "@supabase/supabase-js";
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
+}
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log("Incoming form data:", body);
+    console.log("📥 Incoming contact request:", body);
 
-    const { firstName, lastName, email, phone, serviceType, message } = body;
+    const { data, error } = await supabase
+      .from(process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE!)
+      .insert([
+        {
+          name: body.name,
+          email: body.email,
+          phone: body.phone,
+          message: body.message,
+        },
+      ])
+      .select();
 
-    // Insert into Supabase
-    const { data, error } = await supabase.from("supabase_review").insert([
-      {
-        name: `${firstName} ${lastName}`,
-        email,
-        phone,
-        service_type: serviceType,
-        message,
-      },
-    ]);
+   if (error) {
+  console.error("Supabase insert error:", error);
+  return NextResponse.json(
+    { success: false, error: JSON.stringify(error, null, 2) },
+    { status: 500, headers: CORS_HEADERS }
+  );
+}
 
-    console.log("Supabase insert result:", { data, error });
-
-    if (error) {
-      throw error;
-    }
-
-    // Send email notification
-    const msg = {
-      to: "contact@home2workcleaning.com", // Your business email
-      from: "contact@home2workcleaning.com", // Must match verified sender in SendGrid
-      subject: "New Booking/Message from Website",
-      text: `
-        Name: ${firstName} ${lastName}
-        Email: ${email}
-        Phone: ${phone || "Not provided"}
-        Service Type: ${serviceType || "Not specified"}
-        Message: ${message}
-      `,
-      html: `
-        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
-        <p><strong>Service Type:</strong> ${serviceType || "Not specified"}</p>
-        <p><strong>Message:</strong> ${message}</p>
-      `,
-    };
-
-    await sgMail.send(msg);
-    console.log("Email sent successfully");
-
-    return NextResponse.json({ success: true });
+    console.log("✅ Contact message saved:", data);
+    return NextResponse.json(
+      { success: true, data },
+      { status: 200, headers: CORS_HEADERS }
+    );
   } catch (err: any) {
-    console.error("Error in POST /api/send-contact:", err);
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    console.error("🔥 Unexpected server error (CONTACT):", err);
+    return NextResponse.json(
+      { success: false, error: err.message || "Unknown error" },
+      { status: 500, headers: CORS_HEADERS }
+    );
   }
 }
