@@ -1,24 +1,25 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import sendBookingEmail from "@/lib/email/sendBookingEmail"; // same email handler for now
+import sendBookingEmail from "@/lib/email/sendBookingEmail";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, phone, serviceType, message } = body;
+    const { name, email, phone, service_type, message } = body;
 
-    // Create the data object for Supabase
-    const contactData: any = {
+    // Basic validation (optional but helpful)
+    if (!name || !email || !phone || !message) {
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Prepare data object
+    const contactData = {
       name,
       email,
       phone,
+      service_type, // Optional, will be undefined if not passed
       message,
     };
-
-    // Include service_type only if provided
-    if (serviceType) {
-      contactData.service_type = serviceType;
-    }
 
     // Insert into Supabase
     const { error } = await supabase
@@ -30,8 +31,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
     }
 
-    // Send confirmation email
-    await sendBookingEmail({ name, email, phone, serviceType, message });
+    // Send email
+    await sendBookingEmail({ name, email, phone, service_type, message });
 
     return NextResponse.json({ success: true });
   } catch (error) {
