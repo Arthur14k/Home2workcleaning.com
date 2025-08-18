@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     // Insert into Supabase bookings table
     const { error } = await supabase
       .from(process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE!)
-      .insert([{ name, email, phone, service_type: serviceType, message }]);
+      .insert([{ name, email, phone, service_type, message }]);
 
     if (error) {
       console.error("Supabase insert error:", error);
