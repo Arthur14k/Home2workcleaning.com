@@ -7,21 +7,12 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, email, phone, service_type, message } = body;
 
-    // Basic validation (optional)
     if (!name || !email || !phone || !message) {
       return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
-    // Prepare data object
-    const bookingData = {
-      name,
-      email,
-      phone,
-      service_type, // Optional if the column allows null
-      message,
-    };
+    const bookingData = { name, email, phone, service_type, message };
 
-    // Insert into Supabase
     const { error } = await supabase
       .from(process.env.NEXT_PUBLIC_SUPABASE_BOOKINGS_TABLE!)
       .insert([bookingData]);
@@ -31,8 +22,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
     }
 
-    // Send notification email
-    await sendBookingEmail({ name, email, phone, service_type, message });
+    await sendBookingEmail(bookingData);
 
     return NextResponse.json({ success: true });
   } catch (error) {
