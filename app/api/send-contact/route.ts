@@ -1,58 +1,41 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-import sgMail from '@sendgrid/mail';
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
+import sendBookingEmail from "@/lib/email/sendBookingEmail"; // same email handler for now
 
 export async function POST(req: Request) {
   try {
-    const { name, email, phone, message } = await req.json();
+    const body = await req.json();
+    const { name, email, phone, serviceType, message } = body;
 
-    // ✅ Validate input
-    if (!name || !email || !message) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required fields.' },
-        { status: 400 }
-      );
-    }
-
-    // ✅ Insert into Supabase
-    const { error } = await supabase
-      .from(process.env.NEXT_PUBLIC_SUPABASE_BOOKINGS_TABLE!)
-      .insert([{ name, email, phone, message }]);
-
-    if (error) {
-      console.error('Supabase insert error:', error);
-      return NextResponse.json(
-        { success: false, error: 'Failed to save message.' },
-        { status: 500 }
-      );
-    }
-
-    // ✅ Send confirmation email
-    const msg = {
-      to: 'contact@home2workcleaning.com',
-      from: 'contact@home2workcleaning.com',
-      subject: 'New Contact Message from Website',
-      text: `
-        Name: ${name}
-        Email: ${email}
-        Phone: ${phone || 'N/A'}
-        Message: ${message}
-      `,
+    // Create the data object for Supabase
+    const contactData: any = {
+      name,
+      email,
+      phone,
+      message,
     };
 
-    await sgMail.send(msg);
+    // Include service_type only if provided
+    if (serviceType) {
+      contactData.service_type = serviceType;
+    }
 
-    // ✅ Return success
+    // Insert into Supabase
+    const { error } = await supabase
+      .from(process.env.NEXT_PUBLIC_SUPABASE_BOOKINGS_TABLE!)
+      .insert([contactData]);
+
+    if (error) {
+      console.error("Supabase insert error (send-contact):", error);
+      return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
+    }
+
+    // Send confirmation email
+    await sendBookingEmail({ name, email, phone, serviceType, message });
+
     return NextResponse.json({ success: true });
-
   } catch (error) {
-    // 🔥 This will show in Vercel logs
-    console.error('SendContact Error:', error);
-    return NextResponse.json(
-      { success: false, error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    console.error("SendContact Error:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
