@@ -1,56 +1,58 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+import sgMail from '@sendgrid/mail';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
-
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
-}
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    console.log("📥 Incoming contact request:", body);
+    const { name, email, phone, message } = await req.json();
 
-    const { data, error } = await supabase
+    // ✅ Validate input
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { success: false, error: 'Missing required fields.' },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Insert into Supabase
+    const { error } = await supabase
       .from(process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE!)
-      .insert([
-        {
-          name: body.name,
-          email: body.email,
-          phone: body.phone,
-          message: body.message,
-        },
-      ])
-      .select();
+      .insert([{ name, email, phone, message }]);
 
-   if (error) {
-  console.error("Supabase insert error:", error);
-  return NextResponse.json(
-    { success: false, error: JSON.stringify(error, null, 2) },
-    { status: 500, headers: CORS_HEADERS }
-  );
-}
+    if (error) {
+      console.error('Supabase insert error:', error.message);
+      return NextResponse.json(
+        { success: false, error: 'Failed to save message.' },
+        { status: 500 }
+      );
+    }
 
-    console.log("✅ Contact message saved:", data);
+    // ✅ Send confirmation email
+    const msg = {
+      to: 'contact@home2workcleaning.com',
+      from: 'contact@home2workcleaning.com',
+      subject: 'New Contact Message from Website',
+      text: `
+        Name: ${name}
+        Email: ${email}
+        Phone: ${phone || 'N/A'}
+        Message: ${message}
+      `,
+    };
+
+    await sgMail.send(msg);
+
+    // ✅ Return success
+    return NextResponse.json({ success: true });
+
+  } catch (error) {
+    // 🔥 This will show in Vercel logs
+    console.error('SendContact Error:', error);
     return NextResponse.json(
-      { success: true, data },
-      { status: 200, headers: CORS_HEADERS }
-    );
-  } catch (err: any) {
-    console.error("🔥 Unexpected server error (CONTACT):", err);
-    return NextResponse.json(
-      { success: false, error: err.message || "Unknown error" },
-      { status: 500, headers: CORS_HEADERS }
+      { success: false, error: 'Internal Server Error' },
+      { status: 500 }
     );
   }
 }
