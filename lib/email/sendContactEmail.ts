@@ -18,7 +18,7 @@ export async function sendContactEmail({
   message: string;
 }) {
   const msg = {
-    to: 'contact@home2workcleaning.com', // Your verified sender
+    to: 'contact@home2workcleaning.com',
     from: 'contact@home2workcleaning.com',
     subject: `New Contact Message from ${name}`,
     text: `
