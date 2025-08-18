@@ -4,24 +4,29 @@ import { sendContactEmail } from "@/lib/email/sendContactEmail";
 
 export async function POST(req: Request) {
   try {
-    const { name, email, phone, message } = await req.json();
+    const body = await req.json();
+    const { name, email, phone, message } = body;
 
-    // Send email
-    await sendContactEmail({ name, email, phone, message });
+    if (!name || !email || !phone || !message) {
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+    }
 
-    // Store data in Supabase
+    const contactData = { name, email, phone, message };
+
     const { error } = await supabase
-      .from(process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE!)
-      .insert([{ name, email, phone, message }]);
+      .from(process.env.NEXT_PUBLIC_SUPABASE_BOOKINGS_TABLE!) // assuming bookings table is used for contact too
+      .insert([contactData]);
 
     if (error) {
-      console.error("Supabase insert error:", error);
-      return NextResponse.json({ error: "Failed to save data" }, { status: 500 });
+      console.error("Supabase insert error (send-contact):", error);
+      return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
     }
+
+    await sendContactEmail(contactData);
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("SendContact Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
