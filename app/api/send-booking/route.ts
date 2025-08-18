@@ -1,36 +1,39 @@
-export async function POST(req: Request) {
-  console.log("📥 POST /api/send-booking called");
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
-  let body;
+export async function POST(request: Request) {
   try {
-    body = await req.json();
-    console.log("🧾 Parsed body:", body);
-  } catch (err) {
-    console.error("❌ Invalid JSON:", err);
-    return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
-  }
+    const body = await request.json();
+    const { name, email, phone, serviceType, message } = body;
 
-  const { name, email, phone, serviceType, message } = body;
+    // Validate required fields
+    if (!name || !email || !phone || !serviceType || !message) {
+      return NextResponse.json(
+        { success: false, error: "All fields are required." },
+        { status: 400 }
+      );
+    }
 
-  console.log("📤 Inserting into Supabase...");
-  const { data, error } = await supabase.from("bookings").insert([
-    {
-      name,
-      email,
-      phone,
-      service_type: serviceType,
-      message,
-    },
-  ]);
+    // Insert into Supabase bookings table
+    const { error } = await supabase
+      .from(process.env.NEXT_PUBLIC_SUPABASE_BOOKINGS_TABLE!)
+      .insert([{ name, email, phone, service_type: serviceType, message }]);
 
-  if (error) {
-    console.error("🔥 Supabase insert error:", error);
+    if (error) {
+      console.error("Supabase insert error:", error);
+      return NextResponse.json(
+        { success: false, error: "Failed to save booking." },
+        { status: 500 }
+      );
+    }
+
+    // Success response
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("SendBooking Error:", error);
     return NextResponse.json(
-      { success: false, error: JSON.stringify(error, null, 2) },
+      { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }
-
-  console.log("✅ Booking saved:", data);
-  return NextResponse.json({ success: true });
 }
