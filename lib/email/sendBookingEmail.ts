@@ -1,5 +1,3 @@
-// lib/email/sendBookingEmail.ts
-
 import sgMail from '@sendgrid/mail';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
@@ -18,9 +16,9 @@ export async function sendBookingEmail({
   message: string;
 }) {
   const msg = {
-    to: 'contact@home2workcleaning.com', // Change this to your business email
-    from: 'contact@home2workcleaning.com', // Must match authenticated sender
-    subject: `New Booking from ${name}`,
+    to: 'contact@home2workcleaning.com', // ✅ receiving address
+    from: 'contact@home2workcleaning.com', // ✅ must match verified sender on SendGrid
+    subject: 'New Booking Request',
     text: `
       Name: ${name}
       Email: ${email}
