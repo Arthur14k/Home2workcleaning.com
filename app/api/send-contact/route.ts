@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       .insert([{ name, email, phone, message }]);
 
     if (error) {
-      console.error('Supabase insert error:', error.message);
+      console.error('Supabase insert error:', error);
       return NextResponse.json(
         { success: false, error: 'Failed to save message.' },
         { status: 500 }
