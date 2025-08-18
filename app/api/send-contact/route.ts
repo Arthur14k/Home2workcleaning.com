@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
     // ✅ Insert into Supabase
     const { error } = await supabase
-      .from(process.env.NEXT_PUBLIC_SUPABASE_BOOKINGS_TABLE!)
+      .from(process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE!)
       .insert([{ name, email, phone, message }]);
 
     if (error) {
