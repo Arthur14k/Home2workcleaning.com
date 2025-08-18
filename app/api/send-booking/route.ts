@@ -5,20 +5,21 @@ import sendBookingEmail from "@/lib/email/sendBookingEmail";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, phone, serviceType, message } = body;
+    const { name, email, phone, service_type, message } = body;
 
-    // Compose the booking data object
-    const bookingData: any = {
+    // Basic validation (optional)
+    if (!name || !email || !phone || !message) {
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Prepare data object
+    const bookingData = {
       name,
       email,
       phone,
+      service_type, // Optional if the column allows null
       message,
     };
-
-    // Include service_type only if serviceType exists
-    if (serviceType) {
-      bookingData.service_type = serviceType;
-    }
 
     // Insert into Supabase
     const { error } = await supabase
@@ -26,12 +27,12 @@ export async function POST(req: Request) {
       .insert([bookingData]);
 
     if (error) {
-      console.error("Supabase insert error:", error);
+      console.error("Supabase insert error (send-booking):", error);
       return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
     }
 
     // Send notification email
-    await sendBookingEmail({ name, email, phone, serviceType, message });
+    await sendBookingEmail({ name, email, phone, service_type, message });
 
     return NextResponse.json({ success: true });
   } catch (error) {
