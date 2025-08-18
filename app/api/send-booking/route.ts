@@ -1,39 +1,41 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import sendBookingEmail from "@/lib/email/sendBookingEmail";
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
+    const body = await req.json();
     const { name, email, phone, serviceType, message } = body;
 
-    // Validate required fields
-    if (!name || !email || !phone || !serviceType || !message) {
-      return NextResponse.json(
-        { success: false, error: "All fields are required." },
-        { status: 400 }
-      );
+    // Compose the booking data object
+    const bookingData: any = {
+      name,
+      email,
+      phone,
+      message,
+    };
+
+    // Include service_type only if serviceType exists
+    if (serviceType) {
+      bookingData.service_type = serviceType;
     }
 
-    // Insert into Supabase bookings table
+    // Insert into Supabase
     const { error } = await supabase
       .from(process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE!)
-      .insert([{ name, email, phone, service_type, message }]);
+      .insert([bookingData]);
 
     if (error) {
       console.error("Supabase insert error:", error);
-      return NextResponse.json(
-        { success: false, error: "Failed to save booking." },
-        { status: 500 }
-      );
+      return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
     }
 
-    // Success response
+    // Send notification email
+    await sendBookingEmail({ name, email, phone, serviceType, message });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("SendBooking Error:", error);
-    return NextResponse.json(
-      { success: false, error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
