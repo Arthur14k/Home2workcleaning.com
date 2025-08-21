@@ -1,5 +1,9 @@
 "use client"
 
+export const metadata = {
+  title: "Contact Us - Home2Work Cleaning",
+};
+
 import type React from "react"
 
 import { useState } from "react"
