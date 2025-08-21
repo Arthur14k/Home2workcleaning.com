@@ -1,3 +1,6 @@
+export const metadata = {
+  title: "Contact Us - Home2Work Cleaning",
+};
 "use client"
 
 import type React from "react"
