@@ -1,45 +1,43 @@
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const formData = await req.formData();
+    const formData = await request.formData();
 
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const phone = formData.get('phone') as string;
-    const experience = formData.get('experience') as string;
-    const availability = formData.get('availability') as string;
-    const transport = formData.get('transport') as string;
-    const message = formData.get('message') as string;
+    const name = formData.get('name')?.toString() || '';
+    const email = formData.get('email')?.toString() || '';
+    const phone = formData.get('phone')?.toString() || '';
+    const experience = formData.get('experience')?.toString() || '';
+    const availability = formData.get('availability')?.toString() || '';
+    const message = formData.get('message')?.toString() || '';
 
-    // Email to admin
-    const adminSubject = `📥 New Job Application from ${name}`;
-    const adminHtml = `
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Phone:</strong> ${phone}</p>
-      <p><strong>Experience:</strong> ${experience}</p>
-      <p><strong>Availability:</strong> ${availability}</p>
-      <p><strong>Transport:</strong> ${transport}</p>
-      <p><strong>Message:</strong><br>${message}</p>
-    `;
+    const emailText = `
+New Job Application Received:
 
-    await sendEmail('contact@home2workcleaning.com', adminSubject, adminHtml);
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Experience: ${experience}
+Availability: ${availability}
+Message: ${message}
+`;
 
-    // Confirmation email to applicant
-    const userSubject = '🧼 Thanks for Applying to Home2Work Cleaning';
-    const userHtml = `
-      <p>Hi ${name},</p>
-      <p>Thanks for your application! We've received your details and will be in touch shortly.</p>
-      <p>— Home2Work Cleaning Team</p>
-    `;
+    await sendEmail({
+      to: 'contact@home2workcleaning.com',
+      subject: 'New Job Application Submission',
+      text: emailText,
+    });
 
-    await sendEmail(email, userSubject, userHtml);
+    await sendEmail({
+      to: email,
+      subject: 'Application Received - Home2Work Cleaning',
+      text: `Hi ${name},\n\nThank you for applying to join Home2Work Cleaning! We'll review your application and get back to you soon.\n\nBest,\nHome2Work Cleaning Team`,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Job application submission error:', error);
-    return NextResponse.json({ error: 'Failed to send application.' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Something went wrong' }, { status: 500 });
   }
 }
