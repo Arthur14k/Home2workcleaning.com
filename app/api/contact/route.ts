@@ -1,57 +1,32 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { sendEmail, createContactNotificationEmail, createContactConfirmationEmail } from "@/lib/sendgrid"
+import { NextResponse } from "next/server";
+import { sendEmail } from "@/lib/sendgrid";
+import {
+  createContactNotificationEmail,
+  createContactConfirmationEmail,
+} from "@/lib/sendgrid";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const formData = await request.formData()
+    const formData = await req.formData();
 
-    // Extract form data
-    const contactData = {
-      firstName: formData.get("firstName") as string,
-      lastName: formData.get("lastName") as string,
-      email: formData.get("email") as string,
-      phone: formData.get("phone") as string,
-      serviceType: formData.get("serviceType") as string,
-      message: formData.get("message") as string,
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+    const message = formData.get("message") as string;
+
+    if (!firstName || !lastName || !email || !phone || !message) {
+      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    // Basic validation
-    if (!contactData.firstName || !contactData.lastName || !contactData.email || !contactData.message) {
-      return NextResponse.json({ success: false, message: "Please fill in all required fields." }, { status: 400 })
-    }
+    const fullName = `${firstName} ${lastName}`;
 
-    // Send notification email to business
-    const businessNotification = createContactNotificationEmail(contactData)
-    const businessEmailResult = await sendEmail(businessNotification)
+    await sendEmail(createContactNotificationEmail(fullName, email, phone, message));
+    await sendEmail(createContactConfirmationEmail(fullName, email));
 
-    // Send confirmation email to customer
-    const customerConfirmation = createContactConfirmationEmail(contactData)
-    const customerEmailResult = await sendEmail(customerConfirmation)
-
-    // Log the submission
-    console.log("Contact form submission:", contactData)
-    console.log("Business email sent:", businessEmailResult.success)
-    console.log("Customer email sent:", customerEmailResult.success)
-
-    // Return success even if emails fail (but log the issues)
-    if (!businessEmailResult.success) {
-      console.error("Failed to send business notification email:", businessEmailResult.error)
-    }
-
-    if (!customerEmailResult.success) {
-      console.error("Failed to send customer confirmation email:", customerEmailResult.error)
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Thank you for your message! We will get back to you within 24 hours.",
-      data: contactData,
-    })
+    return NextResponse.json({ message: "Message submitted successfully" }, { status: 200 });
   } catch (error) {
-    console.error("Contact form submission error:", error)
-    return NextResponse.json(
-      { success: false, message: "Something went wrong. Please try again or call us directly." },
-      { status: 500 },
-    )
+    console.error("Contact form submission error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
