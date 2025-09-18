@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
         const { createClient } = await import("@supabase/supabase-js")
         const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 
-        const tableName = process.env.NEXT_PUBLIC_SUPABASE_BOOKINGS_TABLE || "Bookings"
+        const tableName = process.env.NEXT_PUBLIC_SUPABASE_BOOKINGS_TABLE || "bookings"
         console.log("📊 Using table:", tableName)
 
         const { data, error } = await supabase
@@ -81,6 +81,9 @@ export async function POST(request: NextRequest) {
             },
           ])
           .select()
+
+console.log("📥 Supabase insert result:", { data, error })
+
 
         if (error) {
           console.error("❌ Supabase error:", error)
