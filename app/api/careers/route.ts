@@ -57,17 +57,15 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Validation passed")
 
-    // Try Supabase save (but don't let it break emails)
+    // Try Supabase save
     let supabaseResult = null
     try {
       console.log("💾 Attempting Supabase save...")
 
-      // Only try Supabase if we have the required environment variables
       if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
         const { createClient } = await import("@supabase/supabase-js")
         const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
 
-        // Use "applications" as the table name (you mentioned this table exists)
         const tableName = "applications"
         console.log("📊 Using table:", tableName)
 
@@ -95,6 +93,8 @@ export async function POST(request: NextRequest) {
           ])
           .select()
 
+        console.log("📥 Supabase insert result:", { data, error }) // ← ✅ Added log here
+
         if (error) {
           console.error("❌ Supabase error:", error)
         } else {
@@ -106,19 +106,16 @@ export async function POST(request: NextRequest) {
       }
     } catch (supabaseError) {
       console.error("❌ Supabase connection failed:", supabaseError)
-      // Continue with email sending even if Supabase fails
     }
 
-    // Send emails (this should always work)
+    // Send emails
     console.log("📧 Sending emails...")
 
     try {
-      // Send notification email to business
       const businessNotification = createJobApplicationNotificationEmail(applicationData, resumeInfo)
       const businessEmailResult = await sendEmail(businessNotification)
       console.log("📧 Business email result:", businessEmailResult)
 
-      // Send confirmation email to applicant
       const applicantConfirmation = createJobApplicationConfirmationEmail(applicationData)
       const applicantEmailResult = await sendEmail(applicantConfirmation)
       console.log("📧 Applicant email result:", applicantEmailResult)
