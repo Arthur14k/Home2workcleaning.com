@@ -42,29 +42,32 @@ export async function POST(request: NextRequest) {
         const tableName = process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE || "messages"
         console.log("📊 Using table:", tableName)
 
-        const { data, error } = await supabase
-          .from(tableName)
-          .insert([
-            {
-              first_name: contactData.firstName,
-              last_name: contactData.lastName,
-              email: contactData.email,
-              phone: contactData.phone,
-              city: contactData.city,
-              postcode: contactData.zipCode,
-              service_type: contactData.serviceType,
-              message: contactData.message,
-              status: "new",
-            },
-          ])
-          .select()
+const { data, error } = await supabase
+  .from(tableName)
+  .insert([
+    {
+      first_name: contactData.firstName,
+      last_name: contactData.lastName,
+      email: contactData.email,
+      phone: contactData.phone,
+      city: contactData.city,
+      postcode: contactData.zipCode,
+      service_type: contactData.serviceType,
+      message: contactData.message,
+      status: "new",
+    },
+  ])
+  .select()
 
-        if (error) {
-          console.error("❌ Supabase error:", error)
-        } else {
-          console.log("✅ Supabase save successful:", data)
-          supabaseResult = data
-        }
+// 👇 NEW LOG HERE
+console.log("📥 Supabase insert result:", { data, error })
+
+if (error) {
+  console.error("❌ Supabase error:", error)
+} else {
+  console.log("✅ Supabase save successful:", data)
+  supabaseResult = data
+}
       } else {
         console.log("⚠️ Supabase environment variables not found, skipping database save")
       }
