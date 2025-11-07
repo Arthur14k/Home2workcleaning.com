@@ -1,124 +1,109 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { sendEmail, createContactNotificationEmail, createContactConfirmationEmail } from "@/lib/resend"
+// app/api/contact/route.ts
+import { NextResponse } from "next/server";
+import { Resend } from "resend";
 
-export async function POST(request: NextRequest) {
+export const runtime = "nodejs";          // Resend SDK needs Node runtime
+export const dynamic = "force-dynamic";   // avoid static optimization issues
+
+type ContactPayload = {
+  name?: string;
+  email?: string;
+  phone?: string;
+  subject?: string;
+  message?: string;
+  // simple honeypot (optional)
+  website?: string;
+};
+
+function sanitizeLine(v: unknown) {
+  return String(v ?? "").toString().slice(0, 1000);
+}
+function sanitizeMultiline(v: unknown) {
+  return String(v ?? "").toString().slice(0, 8000);
+}
+
+export async function POST(req: Request) {
   try {
-    console.log("🚀 Contact API called")
-
-    const formData = await request.formData()
-    console.log("📝 Form data received")
-
-    const contactData = {
-      firstName: formData.get("firstName") as string,
-      lastName: formData.get("lastName") as string,
-      email: formData.get("email") as string,
-      phone: formData.get("phone") as string,
-      city: formData.get("city") as string,
-      zipCode: formData.get("zipCode") as string,
-      serviceType: formData.get("serviceType") as string,
-      message: formData.get("message") as string,
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error("RESEND_API_KEY missing");
+      return NextResponse.json({ ok: false, error: "Server mail config missing" }, { status: 500 });
     }
 
-    console.log("📋 Contact data:", contactData)
+    const from = process.env.NOTIFY_FROM;
+    const to = process.env.NOTIFY_TO;
+    if (!from || !to) {
+      console.error("NOTIFY_FROM / NOTIFY_TO missing");
+      return NextResponse.json({ ok: false, error: "Server mail addresses missing" }, { status: 500 });
+    }
+
+    const body = (await req.json()) as ContactPayload;
 
     // Basic validation
-    if (!contactData.firstName || !contactData.lastName || !contactData.email || !contactData.message) {
-      console.log("❌ Validation failed")
-      return NextResponse.json({ success: false, message: "Please fill in all required fields." }, { status: 400 })
+    const name = sanitizeLine(body.name);
+    const email = sanitizeLine(body.email);
+    const phone = sanitizeLine(body.phone);
+    const topic = sanitizeLine(body.subject); // optional subject the user typed
+    const message = sanitizeMultiline(body.message);
+
+    // Honeypot check (bots often fill this)
+    if (body.website && String(body.website).trim().length > 0) {
+      // Pretend success to bots; do nothing.
+      return NextResponse.json({ ok: true });
     }
 
-    console.log("✅ Validation passed")
-
-    // Try Supabase save (but don't let it break emails)
-    let supabaseResult = null
-    try {
-      console.log("💾 Attempting Supabase save...")
-
-      // Only try Supabase if we have the required environment variables
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-        const { createClient } = await import("@supabase/supabase-js")
-        const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
-
-        const tableName = process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE || "messages"
-        console.log("📊 Using table:", tableName)
-
-        const { data, error } = await supabase
-          .from(tableName)
-          .insert([
-            {
-              first_name: contactData.firstName,
-              last_name: contactData.lastName,
-              email: contactData.email,
-              phone: contactData.phone,
-              city: contactData.city,
-              postcode: contactData.zipCode,
-              service_type: contactData.serviceType,
-              message: contactData.message,
-              status: "new",
-            },
-          ])
-          .select()
-
-        if (error) {
-          console.error("❌ Supabase error:", error)
-        } else {
-          console.log("✅ Supabase save successful:", data)
-          supabaseResult = data
-        }
-      } else {
-        console.log("⚠️ Supabase environment variables not found, skipping database save")
-      }
-    } catch (supabaseError) {
-      console.error("❌ Supabase connection failed:", supabaseError)
-      // Continue with email sending even if Supabase fails
-    }
-
-    // Send emails (this should always work)
-    console.log("📧 Sending emails...")
-
-    try {
-      // Send notification email to business
-      const businessNotification = createContactNotificationEmail(contactData)
-      const businessEmailResult = await sendEmail(businessNotification)
-      console.log("📧 Business email result:", businessEmailResult)
-
-      // Send confirmation email to customer
-      const customerConfirmation = createContactConfirmationEmail(contactData)
-      const customerEmailResult = await sendEmail(customerConfirmation)
-      console.log("📧 Customer email result:", customerEmailResult)
-
-      console.log("✅ All processing complete")
-
-      return NextResponse.json({
-        success: true,
-        message: "Thank you for your message! We will get back to you within 24 hours.",
-        data: contactData,
-        supabaseId: supabaseResult?.[0]?.id || null,
-        emailsSent: {
-          business: businessEmailResult.success,
-          customer: customerEmailResult.success,
-        },
-      })
-    } catch (emailError) {
-      console.error("❌ Email sending failed:", emailError)
+    if (!name || !email || !message) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "There was an issue sending your message. Please contact us directly.",
-          error: emailError,
-        },
-        { status: 500 },
-      )
+        { ok: false, error: "Please provide name, email and message." },
+        { status: 400 }
+      );
     }
-  } catch (error) {
-    console.error("❌ Contact submission error:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Something went wrong. Please try again or contact us directly.",
-        error: error,
-      },
-      { status: 500 },
-    )
+
+    const resend = new Resend(apiKey);
+
+    // Compose subject
+    const mailSubject = `New Contact Message — ${name}${topic ? ` (${topic})` : ""}`;
+
+    const html = `
+      <div style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6;color:#0f172a">
+        <h2 style="margin:0 0 12px">New Contact Message</h2>
+        <p style="margin:0 0 4px"><strong>Name:</strong> ${name}</p>
+        <p style="margin:0 0 4px"><strong>Email:</strong> ${email}</p>
+        ${phone ? `<p style="margin:0 0 4px"><strong>Phone:</strong> ${phone}</p>` : ""}
+        ${topic ? `<p style="margin:0 0 12px"><strong>Subject:</strong> ${topic}</p>` : ""}
+        <div style="margin-top:12px">
+          <strong>Message:</strong>
+          <div style="white-space:pre-wrap;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-top:6px">
+            ${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+          </div>
+        </div>
+      </div>
+    `;
+
+    const text =
+`New Contact Message
+-------------------
+Name:   ${name}
+Email:  ${email}
+Phone:  ${phone || "-"}
+Subject:${topic || "-"}
+
+Message:
+${message}`;
+
+    const { id } = await resend.emails.send({
+      from,
+      to,
+      subject: mailSubject,
+      text,
+      html,
+      // You can set reply-to so you can reply straight to the sender
+      reply_to: email,
+    });
+
+    return NextResponse.json({ ok: true, id });
+  } catch (err: any) {
+    console.error("Contact email error:", err?.message || err);
+    return NextResponse.json({ ok: false, error: "Failed to send message" }, { status: 500 });
   }
 }
