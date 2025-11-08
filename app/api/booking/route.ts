@@ -2,45 +2,41 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-export const runtime = "nodejs";          // Resend SDK needs Node runtime
-export const dynamic = "force-dynamic";   // avoid static optimization
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-// Helpers
+// --- helpers ---
 const S = (v: unknown, max = 1000) => String(v ?? "").slice(0, max);
 const M = (v: unknown) => S(v, 8000);
 const esc = (t: string) => t.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-function formToObject(fd: FormData) {
-  const o: Record<string, any> = {};
+const formToObject = (fd: FormData) => {
+  const o: Record<string, string> = {};
   for (const [k, v] of fd.entries()) o[k] = typeof v === "string" ? v : "";
   return o;
-}
+};
 
-// Try to read JSON or form-data, then normalize common field names.
 async function readPayload(req: Request) {
   const ct = req.headers.get("content-type") || "";
   let raw: any = {};
   try {
     if (ct.includes("application/json")) raw = await req.json();
     else if (ct.includes("form")) raw = formToObject(await req.formData());
-    else raw = await req.json(); // best effort
+    else raw = await req.json();
   } catch {
-    // Leave as empty; caller will validate.
+    // leave empty; we'll validate below
   }
 
-  // Normalize common aliases from your forms
-  const name =
-    raw.name ?? raw.fullname ?? raw.full_name ?? raw.contact_name ?? "";
-  const email = raw.email ?? raw.contact_email ?? "";
-  const phone = raw.phone ?? raw.contact_phone ?? raw.tel ?? "";
-  const address = raw.address ?? raw.street ?? "";
-  const date = raw.date ?? raw.booking_date ?? raw.when ?? "";
-  const message =
-    raw.message ?? raw.details ?? raw.notes ?? raw.description ?? "";
-  const website = raw.website ?? raw.url ?? ""; // honeypot if present
-
-  return { name, email, phone, address, date, message, website };
+  return {
+    name: raw.name ?? raw.fullname ?? raw.full_name ?? raw.contact_name ?? "",
+    email: raw.email ?? raw.contact_email ?? "",
+    phone: raw.phone ?? raw.contact_phone ?? raw.tel ?? "",
+    address: raw.address ?? raw.street ?? "",
+    date: raw.date ?? raw.booking_date ?? raw.when ?? "",
+    message: raw.message ?? raw.details ?? raw.notes ?? raw.description ?? "",
+    website: raw.website ?? raw.url ?? "", // honeypot
+  };
 }
+// --- /helpers ---
 
 export async function POST(req: Request) {
   const key = process.env.RESEND_API_KEY;
@@ -58,10 +54,9 @@ export async function POST(req: Request) {
   const { name, email, phone, address, date, message, website } =
     await readPayload(req);
 
-  // Honeypot: if hidden "website" is filled, silently pass
+  // Honeypot: if hidden "website" is filled, silently succeed
   if (website && String(website).trim()) return NextResponse.json({ ok: true });
 
-  // Validate required
   if (!name || !email || !message) {
     return NextResponse.json(
       { ok: false, error: "Name, email and message are required." },
@@ -116,7 +111,7 @@ ${safe.message}`;
       subject,
       html,
       text,
-      reply_to: safe.email, // so you can reply directly
+      reply_to: safe.email,
     });
     return NextResponse.json({ ok: true, id });
   } catch (err: any) {
