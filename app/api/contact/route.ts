@@ -1,116 +1,88 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { sendEmail, createContactNotificationEmail, createContactConfirmationEmail } from "@/lib/resend"
-import { createClient } from "@/lib/supabase/server"
+import { NextResponse } from "next/server";
+import { notifyEmail } from "@/lib/resend";
+import { createClient as createSupabaseClient } from "@/lib/supabase/server";
 
-export async function POST(request: NextRequest) {
-  try {
-    console.log("[v0] Contact API called")
+// env table names with safe defaults
+const MESSAGES_TABLE =
+  process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE || "messages";
 
-    const formData = await request.formData()
+function isJSON(req: Request) {
+  return (req.headers.get("content-type") || "").includes("application/json");
+}
 
-    const contactData = {
-      firstName: formData.get("firstName") as string,
-      lastName: formData.get("lastName") as string,
-      email: formData.get("email") as string,
-      phone: formData.get("phone") as string,
-      city: formData.get("city") as string,
-      zipCode: formData.get("zipCode") as string,
-      serviceType: formData.get("serviceType") as string,
-      message: formData.get("message") as string,
-    }
-
-    console.log("[v0] Contact data received")
-
-    // Basic validation
-    if (!contactData.firstName || !contactData.lastName || !contactData.email || !contactData.message) {
-      console.log("[v0] Validation failed")
-      return NextResponse.json({ success: false, message: "Please fill in all required fields." }, { status: 400 })
-    }
-
-    console.log("[v0] Validation passed")
-
-    let supabaseResult = null
-    try {
-      console.log("[v0] Attempting Supabase save...")
-
-      const supabase = await createClient()
-      const tableName = process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE || "messages"
-      console.log("[v0] Using table:", tableName)
-
-      const { data, error } = await supabase
-        .from(tableName)
-        .insert([
-          {
-            first_name: contactData.firstName,
-            last_name: contactData.lastName,
-            email: contactData.email,
-            phone: contactData.phone,
-            city: contactData.city,
-            postcode: contactData.zipCode,
-            service_type: contactData.serviceType,
-            message: contactData.message,
-            status: "new",
-          },
-        ])
-        .select()
-
-      if (error) {
-        console.error("[v0] Supabase error:", error)
-      } else {
-        console.log("[v0] Supabase save successful")
-        supabaseResult = data
-      }
-    } catch (supabaseError) {
-      console.error("[v0] Supabase connection failed:", supabaseError)
-      // Continue with email sending even if Supabase fails
-    }
-
-    // Send emails
-    console.log("[v0] Sending emails...")
-
-    try {
-      // Send notification email to business
-      const businessNotification = createContactNotificationEmail(contactData)
-      const businessEmailResult = await sendEmail(businessNotification)
-      console.log("[v0] Business email sent:", businessEmailResult.success)
-
-      // Send confirmation email to customer
-      const customerConfirmation = createContactConfirmationEmail(contactData)
-      const customerEmailResult = await sendEmail(customerConfirmation)
-      console.log("[v0] Customer email sent:", customerEmailResult.success)
-
-      console.log("[v0] All processing complete")
-
-      return NextResponse.json({
-        success: true,
-        message: "Thank you for your message! We will get back to you within 24 hours.",
-        data: contactData,
-        supabaseId: supabaseResult?.[0]?.id || null,
-        emailsSent: {
-          business: businessEmailResult.success,
-          customer: customerEmailResult.success,
-        },
-      })
-    } catch (emailError) {
-      console.error("[v0] Email sending failed:", emailError)
-      return NextResponse.json(
-        {
-          success: false,
-          message: "There was an issue sending your message. Please contact us directly.",
-          error: emailError instanceof Error ? emailError.message : String(emailError),
-        },
-        { status: 500 },
-      )
-    }
-  } catch (error) {
-    console.error("[v0] Contact submission error:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Something went wrong. Please try again or contact us directly.",
-        error: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 },
-    )
+async function readBody(req: Request) {
+  if (isJSON(req)) {
+    return (await req.json()) as Record<string, any>;
   }
+  const form = await req.formData();
+  const obj: Record<string, any> = {};
+  for (const [k, v] of form.entries()) obj[k] = v;
+  return obj;
+}
+
+export async function POST(req: Request) {
+  try {
+    const body = await readBody(req);
+
+    const name = (body.name || body.fullName || "").toString().trim();
+    const email = (body.email || "").toString().trim();
+    const phone = (body.phone || body.tel || "").toString().trim();
+    const subject = (body.subject || "").toString().trim();
+    const message = (body.message || body.msg || "").toString().trim();
+
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { ok: false, error: "Missing required fields (name, email, message)" },
+        { status: 400 }
+      );
+    }
+
+    // Try save to Supabase (but don't fail if DB is down)
+    try {
+      const supabase = await createSupabaseClient();
+      await supabase.from(MESSAGES_TABLE).insert({
+        name,
+        email,
+        phone,
+        subject,
+        message,
+        created_at: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.warn("[contact] Supabase insert warning:", (e as Error).message);
+    }
+
+    const html = `
+      <div style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+        <h2>New Contact Message</h2>
+        <table cellspacing="0" cellpadding="6" style="border-collapse:collapse">
+          <tr><td><b>Name</b></td><td>${escapeHtml(name)}</td></tr>
+          <tr><td><b>Email</b></td><td>${escapeHtml(email)}</td></tr>
+          <tr><td><b>Phone</b></td><td>${escapeHtml(phone)}</td></tr>
+          <tr><td><b>Subject</b></td><td>${escapeHtml(subject)}</td></tr>
+          <tr><td valign="top"><b>Message</b></td><td>${escapeHtml(message)}</td></tr>
+        </table>
+      </div>
+    `;
+
+    await notifyEmail({
+      subject: subject ? `Contact — ${subject}` : `Contact — ${name}`,
+      html,
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[/api/contact] error:", err);
+    return NextResponse.json(
+      { ok: false, error: (err as Error).message },
+      { status: 500 }
+    );
+  }
+}
+
+function escapeHtml(s: string) {
+  return s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
