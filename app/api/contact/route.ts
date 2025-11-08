@@ -5,16 +5,15 @@ import { Resend } from "resend";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Helpers
+// --- helpers ---
 const S = (v: unknown, max = 1000) => String(v ?? "").slice(0, max);
 const M = (v: unknown) => S(v, 8000);
 const esc = (t: string) => t.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-function formToObject(fd: FormData) {
-  const o: Record<string, any> = {};
+const formToObject = (fd: FormData) => {
+  const o: Record<string, string> = {};
   for (const [k, v] of fd.entries()) o[k] = typeof v === "string" ? v : "";
   return o;
-}
+};
 
 async function readPayload(req: Request) {
   const ct = req.headers.get("content-type") || "";
@@ -23,21 +22,18 @@ async function readPayload(req: Request) {
     if (ct.includes("application/json")) raw = await req.json();
     else if (ct.includes("form")) raw = formToObject(await req.formData());
     else raw = await req.json();
-  } catch {
-    // leave empty; we'll validate
-  }
+  } catch {}
 
-  const name =
-    raw.name ?? raw.fullname ?? raw.full_name ?? raw.contact_name ?? "";
-  const email = raw.email ?? raw.contact_email ?? "";
-  const phone = raw.phone ?? raw.contact_phone ?? raw.tel ?? "";
-  const subject = raw.subject ?? raw.topic ?? raw.reason ?? "";
-  const message =
-    raw.message ?? raw.details ?? raw.notes ?? raw.description ?? "";
-  const website = raw.website ?? raw.url ?? ""; // honeypot if present
-
-  return { name, email, phone, subject, message, website };
+  return {
+    name: raw.name ?? raw.fullname ?? raw.full_name ?? raw.contact_name ?? "",
+    email: raw.email ?? raw.contact_email ?? "",
+    phone: raw.phone ?? raw.contact_phone ?? raw.tel ?? "",
+    subject: raw.subject ?? raw.topic ?? raw.reason ?? "",
+    message: raw.message ?? raw.details ?? raw.notes ?? raw.description ?? "",
+    website: raw.website ?? raw.url ?? "", // honeypot
+  };
 }
+// --- /helpers ---
 
 export async function POST(req: Request) {
   const key = process.env.RESEND_API_KEY;
@@ -52,8 +48,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const { name, email, phone, subject, message, website } =
-    await readPayload(req);
+  const { name, email, phone, subject, message, website } = await readPayload(req);
 
   if (website && String(website).trim()) return NextResponse.json({ ok: true });
 
@@ -73,9 +68,7 @@ export async function POST(req: Request) {
   };
 
   const resend = new Resend(key);
-  const mailSubject = `New Contact Message — ${safe.name}${
-    safe.subject ? ` (${safe.subject})` : ""
-  }`;
+  const mailSubject = `New Contact Message — ${safe.name}${safe.subject ? ` (${safe.subject})` : ""}`;
 
   const html = `
     <div style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6;color:#0f172a">
