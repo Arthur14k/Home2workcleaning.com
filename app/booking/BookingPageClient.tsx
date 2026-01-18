@@ -1,110 +1,126 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
 export default function BookingPageClient() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<{
-    type: "success" | "error"
-    message: string
-  } | null>(null)
+  const [status, setStatus] = useState<{
+    type: "success" | "error" | null;
+    message?: string;
+    missingFields?: string[];
+  }>({ type: null });
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setIsSubmitting(true)
-    setSubmitStatus(null)
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus({ type: null });
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
 
     try {
-      const formData = new FormData(event.currentTarget)
-
-      const response = await fetch("/api/booking", {
+      const res = await fetch("/api/booking", {
         method: "POST",
         body: formData,
-      })
+      });
 
-      const result = await response.json()
+      const result = await res.json();
 
-      if (response.ok && result.success) {
-        setSubmitStatus({
-          type: "success",
-          message: result.message,
-        })
-        event.currentTarget.reset()
-      } else {
-        setSubmitStatus({
+      if (!res.ok) {
+        setStatus({
           type: "error",
-          message: result.message || "Something went wrong.",
-        })
+          message: result.error,
+          missingFields: result.missingFields,
+        });
+        return;
       }
-    } catch (error) {
-      console.error("Booking form submission error:", error)
-      setSubmitStatus({
+
+      setStatus({
+        type: "success",
+        message: "Booking submitted successfully!",
+      });
+
+      form.reset();
+    } catch (err) {
+      console.error("❌ Client submit error:", err);
+      setStatus({
         type: "error",
         message: "Network error. Please try again.",
-      })
-    } finally {
-      setIsSubmitting(false)
+      });
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      {submitStatus && (
-        <div
-          style={{
-            marginBottom: "1rem",
-            color: submitStatus.type === "error" ? "red" : "green",
-          }}
-        >
-          {submitStatus.message}
+      {status.type === "error" && (
+        <div style={{ color: "red", marginBottom: 12 }}>
+          {status.message}
+          {status.missingFields && (
+            <ul>
+              {status.missingFields.map((f) => (
+                <li key={f}>{f}</li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 
-      {/* Service Type */}
-      <input type="radio" name="serviceType" value="Residential" defaultChecked />
-      <input type="radio" name="serviceType" value="Commercial" />
+      {status.type === "success" && (
+        <div style={{ color: "green", marginBottom: 12 }}>
+          {status.message}
+        </div>
+      )}
 
-      {/* Contact Info */}
-      <input name="firstName" required />
-      <input name="lastName" required />
-      <input name="email" type="email" required />
-      <input name="phone" required />
+      {/* SERVICE TYPE */}
+      <input type="hidden" name="serviceType" value="Residential" />
 
-      {/* Property Details */}
-      <input name="address" required />
-      <input name="city" required />
-      <input name="postcode" required />
-      <input name="propertySize" type="number" />
-      <select name="rooms">
-        <option value="1-2 rooms">1-2 rooms</option>
-        <option value="3-4 rooms">3-4 rooms</option>
+      {/* CONTACT */}
+      <input name="firstName" placeholder="First Name" required />
+      <input name="lastName" placeholder="Last Name" required />
+      <input name="email" type="email" placeholder="Email" required />
+      <input name="phone" placeholder="Phone" required />
+
+      {/* PROPERTY */}
+      <input name="address" placeholder="Address" required />
+      <input name="city" placeholder="City" required />
+      <input name="postcode" placeholder="Postcode" required />
+
+      <select name="rooms" required>
+        <option value="">Rooms</option>
+        <option value="1-2 rooms">1–2 rooms</option>
+        <option value="3-4 rooms">3–4 rooms</option>
+        <option value="5+ rooms">5+ rooms</option>
       </select>
 
-      {/* Service Details */}
+      {/* SERVICE DETAILS */}
       <select name="cleaningType" required>
+        <option value="">Cleaning Type</option>
         <option value="Deep Cleaning">Deep Cleaning</option>
         <option value="Regular Cleaning">Regular Cleaning</option>
       </select>
 
-      <select name="frequency">
+      <select name="frequency" required>
+        <option value="">Frequency</option>
         <option value="Weekly">Weekly</option>
         <option value="Bi-weekly">Bi-weekly</option>
+        <option value="One-off">One-off</option>
       </select>
 
-      {/* Date & Time */}
-      <input type="date" name="preferredDate" required />
+      {/* DATE — ISO submission, UK display handled by browser */}
+      <input
+        type="date"
+        name="preferredDate"
+        required
+      />
+
       <select name="preferredTime" required>
-        <option value="10:00 AM - 12:00 PM">
-          10:00 AM - 12:00 PM
-        </option>
+        <option value="">Time</option>
+        <option value="08:00 - 10:00">08:00 - 10:00</option>
+        <option value="10:00 - 12:00">10:00 - 12:00</option>
+        <option value="12:00 - 14:00">12:00 - 14:00</option>
       </select>
 
-      {/* Instructions */}
-      <textarea name="instructions" />
+      <textarea name="notes" placeholder="Special instructions (optional)" />
 
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Submitting..." : "Book My Cleaning Service"}
-      </button>
+      <button type="submit">Book My Cleaning Service</button>
     </form>
-  )
+  );
 }
