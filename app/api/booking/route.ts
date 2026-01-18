@@ -1,71 +1,91 @@
-// app/api/booking/route.ts
-import { NextResponse } from "next/server";
-import { sendBookingEmail } from "@/lib/resend";
-import { createClient } from "@/lib/supabase/server";
+import { NextResponse } from "next/server"
+import { notifyEmail } from "@/lib/resend"
 
 export async function POST(req: Request) {
   try {
-    const formData = await req.formData();
+    const formData = await req.formData()
 
-    // Extract fields safely
-    const name = formData.get("name")?.toString();
-    const email = formData.get("email")?.toString();
-    const service = formData.get("service")?.toString();
-    const date = formData.get("date")?.toString();
+    // Convert FormData to plain object
+    const data: Record<string, string> = {}
+    formData.forEach((value, key) => {
+      data[key] = String(value)
+    })
 
-    if (!name || !email || !service || !date) {
+    // 🔍 TEMP DEBUG — remove after final confirmation
+    console.log("BOOKING PAYLOAD RECEIVED:", data)
+
+    // ✅ Canonical required fields
+    const requiredFields = [
+      "serviceType",
+      "firstName",
+      "lastName",
+      "email",
+      "phone",
+      "address",
+      "city",
+      "postcode",
+      "cleaningType",
+      "preferredDate",
+      "preferredTime",
+    ]
+
+    const missingFields = requiredFields.filter(
+      (field) => !data[field] || data[field].trim() === ""
+    )
+
+    if (missingFields.length > 0) {
       return NextResponse.json(
-        { success: false, message: "Missing required fields." },
+        {
+          success: false,
+          message: `Missing required fields: ${missingFields.join(", ")}`,
+        },
         { status: 400 }
-      );
+      )
     }
 
-    const supabase = createClient();
+    // ✉️ Email content
+    const emailHtml = `
+      <h2>New Booking Received</h2>
+      <p><strong>Service Type:</strong> ${data.serviceType}</p>
+      <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
+      <p><strong>Email:</strong> ${data.email}</p>
+      <p><strong>Phone:</strong> ${data.phone}</p>
 
-    // 1️⃣ Save booking (CRITICAL)
-    const { error: dbError } = await supabase.from("bookings").insert({
-      name,
-      email,
-      service,
-      date,
-    });
+      <h3>Property Details</h3>
+      <p>${data.address}, ${data.city}, ${data.postcode}</p>
+      <p><strong>Rooms:</strong> ${data.rooms || "N/A"}</p>
+      <p><strong>Property Size:</strong> ${data.propertySize || "N/A"}</p>
 
-    if (dbError) {
-      console.error("Booking DB error:", dbError);
-      return NextResponse.json(
-        { success: false, message: "Failed to save booking." },
-        { status: 500 }
-      );
-    }
+      <h3>Service Details</h3>
+      <p><strong>Cleaning Type:</strong> ${data.cleaningType}</p>
+      <p><strong>Frequency:</strong> ${data.frequency || "N/A"}</p>
 
-    // 2️⃣ Send email (NON-CRITICAL)
-    try {
-      await sendBookingEmail({
-        subject: "New Cleaning Booking",
-        html: `
-          <h2>New Booking</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Service:</strong> ${service}</p>
-          <p><strong>Date:</strong> ${date}</p>
-        `,
-      });
-    } catch (emailError) {
-      // IMPORTANT: Do NOT fail the request
-      console.error("Email failed but booking succeeded:", emailError);
-    }
+      <h3>Date & Time</h3>
+      <p>${data.preferredDate} — ${data.preferredTime}</p>
 
-    // 3️⃣ Always return success if booking saved
+      <h3>Instructions</h3>
+      <p>${data.instructions || "None"}</p>
+    `
+
+    // 🔔 Send notification email
+    await notifyEmail({
+      subject: "New Cleaning Booking",
+      html: emailHtml,
+    })
+
     return NextResponse.json({
       success: true,
-      message: "Booking received successfully.",
-    });
-  } catch (err) {
-    console.error("Unexpected booking error:", err);
+      message: "Booking submitted successfully.",
+    })
+  } catch (error) {
+    console.error("BOOKING API ERROR:", error)
 
     return NextResponse.json(
-      { success: false, message: "Unexpected server error." },
+      {
+        success: false,
+        message: "Internal server error. Please try again.",
+      },
       { status: 500 }
-    );
+    )
   }
 }
