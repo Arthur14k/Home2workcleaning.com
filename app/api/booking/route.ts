@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
-import { resend } from "@/lib/resend";
+import { notifyEmail } from "@/lib/resend";
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const formData = await request.formData();
-    const data = Object.fromEntries(formData.entries());
+    const formData = await req.formData();
 
-    console.log("📥 BOOKING FORM DATA RECEIVED:", data);
-
-    // Explicit required fields
+    // Required fields (single source of truth)
     const requiredFields = [
       "serviceType",
       "firstName",
@@ -18,75 +15,67 @@ export async function POST(request: Request) {
       "address",
       "city",
       "postcode",
+      "rooms",
       "cleaningType",
       "frequency",
       "preferredDate",
       "preferredTime",
-      "rooms",
     ];
 
-    const missingFields = requiredFields.filter(
-      (field) => !data[field] || String(data[field]).trim() === ""
+    const missing = requiredFields.filter(
+      (field) => !formData.get(field)
     );
 
-    if (missingFields.length > 0) {
-      console.error("❌ Missing fields:", missingFields);
+    if (missing.length > 0) {
       return NextResponse.json(
         {
           success: false,
-          error: "Missing required fields",
-          missingFields,
+          message: `Missing required fields: ${missing.join(", ")}`,
         },
         { status: 400 }
       );
     }
 
-    // Convert ISO date to UK format for email display
-    const isoDate = String(data.preferredDate); // YYYY-MM-DD
-    const [year, month, day] = isoDate.split("-");
-    const ukDate = `${day}/${month}/${year}`;
+    // Normalize date to ISO (YYYY-MM-DD)
+    const rawDate = formData.get("preferredDate") as string;
+    const [dd, mm, yyyy] = rawDate.split("/");
+    const normalizedDate = `${yyyy}-${mm}-${dd}`;
 
-    const emailHtml = `
-      <h2>New Cleaning Booking</h2>
-      <p><strong>Service:</strong> ${data.serviceType}</p>
-      <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
-      <p><strong>Email:</strong> ${data.email}</p>
-      <p><strong>Phone:</strong> ${data.phone}</p>
+    const booking = {
+      serviceType: formData.get("serviceType"),
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      address: formData.get("address"),
+      city: formData.get("city"),
+      postcode: formData.get("postcode"),
+      rooms: formData.get("rooms"),
+      cleaningType: formData.get("cleaningType"),
+      frequency: formData.get("frequency"),
+      preferredDate: normalizedDate,
+      preferredTime: formData.get("preferredTime"),
+      instructions: formData.get("instructions") || "—",
+    };
 
-      <h3>Property</h3>
-      <p>${data.address}, ${data.city}, ${data.postcode}</p>
-      <p><strong>Rooms:</strong> ${data.rooms}</p>
-
-      <h3>Service Details</h3>
-      <p><strong>Cleaning Type:</strong> ${data.cleaningType}</p>
-      <p><strong>Frequency:</strong> ${data.frequency}</p>
-      <p><strong>Date:</strong> ${ukDate}</p>
-      <p><strong>Time:</strong> ${data.preferredTime}</p>
-
-      ${
-        data.notes
-          ? `<h3>Special Instructions</h3><p>${data.notes}</p>`
-          : ""
-      }
-    `;
-
-    await resend.emails.send({
-      from: process.env.NOTIFY_FROM!,
-      to: process.env.NOTIFY_TO!,
+    await notifyEmail({
       subject: "New Cleaning Booking",
-      html: emailHtml,
+      html: `
+        <h2>New Booking</h2>
+        <pre>${JSON.stringify(booking, null, 2)}</pre>
+      `,
     });
 
     return NextResponse.json({
       success: true,
-      message: "Booking submitted successfully.",
+      message: "Booking submitted successfully",
     });
   } catch (error) {
-    console.error("🔥 Booking API error:", error);
+    console.error("BOOKING API ERROR:", error);
     return NextResponse.json(
       {
         success: false,
-        error: "Internal server error",
+        message: "Server error. Please try again.",
       },
       { status: 500 }
     );
