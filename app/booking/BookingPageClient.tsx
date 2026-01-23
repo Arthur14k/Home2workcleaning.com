@@ -3,124 +3,139 @@
 import { useState } from "react";
 
 export default function BookingPageClient() {
-  const [status, setStatus] = useState<{
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
     type: "success" | "error" | null;
-    message?: string;
-    missingFields?: string[];
-  }>({ type: null });
+    message: string;
+  }>({ type: null, message: "" });
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setStatus({ type: null });
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: "" });
 
     try {
-      const res = await fetch("/api/booking", {
+      const formData = new FormData(event.currentTarget);
+
+      const response = await fetch("/api/booking", {
         method: "POST",
         body: formData,
       });
 
-      const result = await res.json();
+      const result = await response.json();
 
-      if (!res.ok) {
-        setStatus({
-          type: "error",
-          message: result.error,
-          missingFields: result.missingFields,
-        });
-        return;
+      if (!response.ok) {
+        throw new Error(result.message || "Submission failed");
       }
 
-      setStatus({
+      setSubmitStatus({
         type: "success",
         message: "Booking submitted successfully!",
       });
 
-      form.reset();
-    } catch (err) {
-      console.error("❌ Client submit error:", err);
-      setStatus({
+      event.currentTarget.reset();
+    } catch (error: any) {
+      setSubmitStatus({
         type: "error",
-        message: "Network error. Please try again.",
+        message: error.message || "Something went wrong. Please try again.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {status.type === "error" && (
-        <div style={{ color: "red", marginBottom: 12 }}>
-          {status.message}
-          {status.missingFields && (
-            <ul>
-              {status.missingFields.map((f) => (
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
-          )}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {submitStatus.type && (
+        <div
+          className={`p-4 rounded ${
+            submitStatus.type === "success"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {submitStatus.message}
         </div>
       )}
 
-      {status.type === "success" && (
-        <div style={{ color: "green", marginBottom: 12 }}>
-          {status.message}
-        </div>
-      )}
-
-      {/* SERVICE TYPE */}
+      {/* Service Type */}
       <input type="hidden" name="serviceType" value="Residential" />
 
-      {/* CONTACT */}
-      <input name="firstName" placeholder="First Name" required />
-      <input name="lastName" placeholder="Last Name" required />
-      <input name="email" type="email" placeholder="Email" required />
-      <input name="phone" placeholder="Phone" required />
+      {/* Contact Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input name="firstName" placeholder="First Name" required />
+        <input name="lastName" placeholder="Last Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input name="phone" placeholder="Phone Number" required />
+      </div>
 
-      {/* PROPERTY */}
-      <input name="address" placeholder="Address" required />
-      <input name="city" placeholder="City" required />
-      <input name="postcode" placeholder="Postcode" required />
+      {/* Address */}
+      <input name="address" placeholder="Property Address" required />
 
-      <select name="rooms" required>
-        <option value="">Rooms</option>
-        <option value="1-2 rooms">1–2 rooms</option>
-        <option value="3-4 rooms">3–4 rooms</option>
-        <option value="5+ rooms">5+ rooms</option>
-      </select>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input name="city" placeholder="City" required />
+        <input name="postcode" placeholder="Postcode" required />
+      </div>
 
-      {/* SERVICE DETAILS */}
-      <select name="cleaningType" required>
-        <option value="">Cleaning Type</option>
-        <option value="Deep Cleaning">Deep Cleaning</option>
-        <option value="Regular Cleaning">Regular Cleaning</option>
-      </select>
+      {/* Property Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <select name="rooms" required>
+          <option value="">Number of Rooms</option>
+          <option value="1-2 rooms">1–2 rooms</option>
+          <option value="3-4 rooms">3–4 rooms</option>
+          <option value="5+ rooms">5+ rooms</option>
+        </select>
+
+        <select name="cleaningType" required>
+          <option value="">Cleaning Type</option>
+          <option value="Standard Cleaning">Standard Cleaning</option>
+          <option value="Deep Cleaning">Deep Cleaning</option>
+          <option value="End of Tenancy">End of Tenancy</option>
+        </select>
+      </div>
 
       <select name="frequency" required>
         <option value="">Frequency</option>
+        <option value="One-off">One-off</option>
         <option value="Weekly">Weekly</option>
         <option value="Bi-weekly">Bi-weekly</option>
-        <option value="One-off">One-off</option>
+        <option value="Monthly">Monthly</option>
       </select>
 
-      {/* DATE — ISO submission, UK display handled by browser */}
-      <input
-        type="date"
-        name="preferredDate"
-        required
+      {/* Date & Time */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input
+          type="text"
+          name="preferredDate"
+          placeholder="DD/MM/YYYY"
+          required
+          pattern="\d{2}/\d{2}/\d{4}"
+          title="Please enter date as DD/MM/YYYY"
+        />
+
+        <select name="preferredTime" required>
+          <option value="">Preferred Time</option>
+          <option value="08:00 AM - 10:00 AM">08:00 AM – 10:00 AM</option>
+          <option value="10:00 AM - 12:00 PM">10:00 AM – 12:00 PM</option>
+          <option value="12:00 PM - 02:00 PM">12:00 PM – 02:00 PM</option>
+          <option value="02:00 PM - 04:00 PM">02:00 PM – 04:00 PM</option>
+        </select>
+      </div>
+
+      {/* Special Instructions */}
+      <textarea
+        name="instructions"
+        placeholder="Special instructions (optional)"
+        rows={4}
       />
 
-      <select name="preferredTime" required>
-        <option value="">Time</option>
-        <option value="08:00 - 10:00">08:00 - 10:00</option>
-        <option value="10:00 - 12:00">10:00 - 12:00</option>
-        <option value="12:00 - 14:00">12:00 - 14:00</option>
-      </select>
-
-      <textarea name="notes" placeholder="Special instructions (optional)" />
-
-      <button type="submit">Book My Cleaning Service</button>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-blue-600 text-white py-3 rounded"
+      >
+        {isSubmitting ? "Submitting..." : "Book My Cleaning Service"}
+      </button>
     </form>
   );
 }
