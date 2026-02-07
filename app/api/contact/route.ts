@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       city: formData.get("city") as string,
-      zipCode: formData.get("zipCode") as string,
+      postcode: formData.get("postcode") as string,
       serviceType: formData.get("serviceType") as string,
       message: formData.get("message") as string,
     }
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
             email: contactData.email,
             phone: contactData.phone,
             city: contactData.city,
-            postcode: contactData.zipCode,
+            postcode: contactData.postCode,
             service_type: contactData.serviceType,
             message: contactData.message,
             status: "new",
