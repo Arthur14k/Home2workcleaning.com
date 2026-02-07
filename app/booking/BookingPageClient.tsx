@@ -323,11 +323,11 @@ export default function BookingPageClient() {
                             required
                           >
                             <option value="">Select time</option>
-                            <option value="8:00-10:00">8:00 AM - 10:00 AM</option>
-                            <option value="10:00-12:00">10:00 AM - 12:00 PM</option>
-                            <option value="12:00-14:00">12:00 PM - 2:00 PM</option>
-                            <option value="14:00-16:00">2:00 PM - 4:00 PM</option>
-                            <option value="16:00-18:00">4:00 PM - 6:00 PM</option>
+                            <option value="8:00 AM -10:00 AM">8:00 AM - 10:00 AM</option>
+                            <option value="10:00 AM -12:00 PM">10:00 AM - 12:00 PM</option>
+                            <option value="12:00 PM - 14:00 PM">12:00 PM - 14:00 PM</option>
+                            <option value=" 14:00 PM -16:00">14:00 PM - 16:00 PM</option>
+                            <option value="16:00 PM -18:00">16:00 PM - 18:00 PM</option>
                           </select>
                         </div>
                       </div>
