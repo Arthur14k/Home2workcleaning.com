@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
             phone: bookingData.phone,
             address: bookingData.address,
             city: bookingData.city,
-            postcode: bookingData.postcode,
+            postcode: bookingData.postCode,
             property_size: bookingData.propertySize ? parseInt(bookingData.propertySize, 10) : null,
             rooms: bookingData.rooms,
             cleaning_type: bookingData.cleaningType,
