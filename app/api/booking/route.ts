@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       phone: formData.get("phone") as string,
       address: formData.get("address") as string,
       city: formData.get("city") as string,
-      postcode: formData.get("PostCode") as string,
+      postcode: formData.get("postCode") as string,
       propertySize: formData.get("propertySize") as string,
       rooms: formData.get("rooms") as string,
       cleaningType: formData.get("cleaningType") as string,
