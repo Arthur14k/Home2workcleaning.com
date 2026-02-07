@@ -20,7 +20,7 @@ export default function BookingPageClient() {
   }>({ type: null, message: "" })
 
   // Get today's date in UK format for minimum date
-  const today = format(new Date(), "yyyy-MM-dd")
+  const today = format(new Date(), "dd-mm-yyyy")
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
