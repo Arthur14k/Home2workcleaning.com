@@ -197,8 +197,8 @@ export default function ContactPageClient() {
                       <Input id="city" name="city" required />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="zipCode">Postcode *</Label>
-                      <Input id="zipCode" name="zipCode" required />
+                      <Label htmlFor="postCode">postcode *</Label>
+                      <Input id="postCode" name="postCode" required />
                     </div>
                   </div>
 
