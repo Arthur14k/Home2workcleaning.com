@@ -1,6 +1,5 @@
 "use client"
 
-/* Complete Booking Page - includes hero, How It Works, form in Card, sidebar, header, footer */
 import type React from "react"
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,8 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Calendar, Clock, Home, Building, CheckCircle, Phone, Mail, AlertCircle } from "lucide-react"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 import { format } from "date-fns"
 
 export default function BookingPageClient() {
@@ -21,7 +20,7 @@ export default function BookingPageClient() {
   }>({ type: null, message: "" })
 
   // Get today's date in UK format for minimum date
-  const today = format(new Date(), "yyyy-MM-dd")
+  const today = format(new Date(), "dd-mm-yyyy")
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -234,8 +233,8 @@ export default function BookingPageClient() {
                           <Input id="city" name="city" required />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="zipCode">Postcode *</Label>
-                          <Input id="zipCode" name="zipCode" required />
+                          <Label htmlFor="postcode">postcode *</Label>
+                          <Input id="postcode" name="postcode" required />
                         </div>
                       </div>
                       <div className="grid md:grid-cols-2 gap-4">
@@ -324,11 +323,11 @@ export default function BookingPageClient() {
                             required
                           >
                             <option value="">Select time</option>
-                            <option value="8:00-10:00">8:00 AM - 10:00 AM</option>
-                            <option value="10:00-12:00">10:00 AM - 12:00 PM</option>
-                            <option value="12:00-14:00">12:00 PM - 2:00 PM</option>
-                            <option value="14:00-16:00">2:00 PM - 4:00 PM</option>
-                            <option value="16:00-18:00">4:00 PM - 6:00 PM</option>
+                            <option value="8:00 AM -10:00 AM">8:00 AM - 10:00 AM</option>
+                            <option value="10:00 AM -12:00 PM">10:00 AM - 12:00 PM</option>
+                            <option value="12:00 PM - 14:00 PM">12:00 PM - 14:00 PM</option>
+                            <option value=" 14:00 PM -16:00">14:00 PM - 16:00 PM</option>
+                            <option value="16:00 PM -18:00">16:00 PM - 18:00 PM</option>
                           </select>
                         </div>
                       </div>
