@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Phone, Mail, Clock, CheckCircle, AlertCircle } from "lucide-react"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 export default function ContactPageClient() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -197,8 +197,8 @@ export default function ContactPageClient() {
                       <Input id="city" name="city" required />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="zipCode">Postcode *</Label>
-                      <Input id="zipCode" name="zipCode" required />
+                      <Label htmlFor="postcode">postcode *</Label>
+                      <Input id="postcode" name="postcode" required />
                     </div>
                   </div>
 
