@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       city: formData.get("city") as string,
-      zipCode: formData.get("zipCode") as string,
+      zipCode: formData.get("z") as string,
       serviceType: formData.get("serviceType") as string,
       message: formData.get("message") as string,
     }
