@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { sendEmail, createContactNotificationEmail, createContactConfirmationEmail } from "@/lib/resend"
-import { createClient } from "@supabase/supabase-js"
+import { createClient } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       city: formData.get("city") as string,
-      zipCode: formData.get("z") as string,
+      postcode: formData.get("postcode") as string,
       serviceType: formData.get("serviceType") as string,
       message: formData.get("message") as string,
     }
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     try {
       console.log("[v0] Attempting Supabase save...")
 
-      const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+      const supabase = await createClient()
       const tableName = process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE || "messages"
       console.log("[v0] Using table:", tableName)
 
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
             email: contactData.email,
             phone: contactData.phone,
             city: contactData.city,
-            postcode: contactData.zipCode,
+            postcode: contactData.postcode,
             service_type: contactData.serviceType,
             message: contactData.message,
             status: "new",
