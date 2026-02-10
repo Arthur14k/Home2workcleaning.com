@@ -233,8 +233,8 @@ export default function BookingPageClient() {
                           <Input id="city" name="city" required />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="postCode">postCode *</Label>
-                          <Input id="postCode" name="postCode" required />
+                          <Label htmlFor="postcode">postcode *</Label>
+                          <Input id="postcode" name="postcode" required />
                         </div>
                       </div>
                       <div className="grid md:grid-cols-2 gap-4">
