@@ -72,12 +72,12 @@ export async function POST(request: NextRequest) {
       // Send notification email to business
       const businessNotification = createContactNotificationEmail(contactData)
       const businessEmailResult = await sendEmail(businessNotification)
-      console.log("[v0] Business email sent:", businessEmailResult.success)
+      console.log("[v0] Business email sent:", !!businessEmailResult)
 
       // Send confirmation email to customer
       const customerConfirmation = createContactConfirmationEmail(contactData)
       const customerEmailResult = await sendEmail(customerConfirmation)
-      console.log("[v0] Customer email sent:", customerEmailResult.success)
+      console.log("[v0] Customer email sent:", !!customerEmailResult)
 
       console.log("[v0] All processing complete")
 
@@ -87,8 +87,8 @@ export async function POST(request: NextRequest) {
         data: contactData,
         supabaseId: supabaseResult?.[0]?.id || null,
         emailsSent: {
-          business: businessEmailResult.success,
-          customer: customerEmailResult.success,
+          business: !!businessEmailResult,
+          customer: !!customerEmailResult,
         },
       })
     } catch (emailError) {

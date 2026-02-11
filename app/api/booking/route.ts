@@ -54,7 +54,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // INSERT — MUST MATCH SUPABASE COLUMN NAMES (snake_case)
     const { error } = await supabase.from("bookings").insert({
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
       frequency,
       preferred_date: preferredDate, // ISO DD-MM-YYYY
       preferred_time: preferredTime,
-      special_instruc: specialInstructions,
+      special_instructions: specialInstructions,
       status: "pending",
     })
 
