@@ -3,8 +3,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Star, Quote } from "lucide-react"
 import Link from "next/link"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 
 export const metadata: Metadata = {
   title: "Customer Testimonials - Home2Work Cleaning | What Our Clients Say",

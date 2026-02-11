@@ -1,13 +1,11 @@
-// app/api/booking/route.ts
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@supabase/supabase-js"
 import { notifyEmail } from "@/lib/resend"
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    // Frontend (camelCase)
     const serviceType = formData.get("serviceType")?.toString()
     const firstName = formData.get("firstName")?.toString()
     const lastName = formData.get("lastName")?.toString()
@@ -29,7 +27,6 @@ export async function POST(req: Request) {
     const specialInstructions =
       formData.get("specialInstructions")?.toString() || null
 
-    // Validation
     if (
       !serviceType ||
       !firstName ||
@@ -46,17 +43,17 @@ export async function POST(req: Request) {
       !preferredTime
     ) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Missing required fields.",
-        },
-        { status: 400 }
+        { success: false, message: "Missing required fields." },
+        { status: 400 },
       )
     }
 
-    const supabase = await createClient()
+    // Use @supabase/supabase-js directly (no cookies needed in API routes)
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    )
 
-    // INSERT — MUST MATCH SUPABASE COLUMN NAMES (snake_case)
     const { error } = await supabase.from("bookings").insert({
       service_type: serviceType,
       first_name: firstName,
@@ -70,7 +67,7 @@ export async function POST(req: Request) {
       rooms,
       cleaning_type: cleaningType,
       frequency,
-      preferred_date: preferredDate, // ISO DD-MM-YYYY
+      preferred_date: preferredDate,
       preferred_time: preferredTime,
       special_instructions: specialInstructions,
       status: "pending",
@@ -79,27 +76,29 @@ export async function POST(req: Request) {
     if (error) {
       console.error("Supabase insert error:", error)
       return NextResponse.json(
-        {
-          success: false,
-          message: "Failed to save booking.",
-        },
-        { status: 500 }
+        { success: false, message: "Failed to save booking." },
+        { status: 500 },
       )
     }
 
-    // Email notification
-    await notifyEmail({
-      subject: "New Booking Received",
-      html: `
-        <h2>New Booking</h2>
-        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
-        <p><strong>Service:</strong> ${cleaningType}</p>
-        <p><strong>Date:</strong> ${preferredDate}</p>
-        <p><strong>Time:</strong> ${preferredTime}</p>
-      `,
-    })
+    // Email notification - wrapped in try/catch so it never kills the request
+    try {
+      await notifyEmail({
+        subject: "New Booking Received",
+        html: `
+          <h2>New Booking</h2>
+          <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone}</p>
+          <p><strong>Service:</strong> ${cleaningType}</p>
+          <p><strong>Date:</strong> ${preferredDate}</p>
+          <p><strong>Time:</strong> ${preferredTime}</p>
+        `,
+      })
+    } catch (emailError) {
+      console.error("Email notification failed:", emailError)
+      // Continue - booking was saved, email failure is non-critical
+    }
 
     return NextResponse.json({
       success: true,
@@ -108,11 +107,8 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("Booking API error:", err)
     return NextResponse.json(
-      {
-        success: false,
-        message: "Unexpected server error.",
-      },
-      { status: 500 }
+      { success: false, message: "Unexpected server error." },
+      { status: 500 },
     )
   }
 }
