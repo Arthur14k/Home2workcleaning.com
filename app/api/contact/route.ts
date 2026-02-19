@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { sendEmail, createContactNotificationEmail, createContactConfirmationEmail } from "@/lib/resend"
-import { createClient } from "@supabase/supabase-js"
+import { createClient } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,10 +33,7 @@ export async function POST(request: NextRequest) {
     try {
       console.log("[v0] Attempting Supabase save...")
 
-      const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      )
+      const supabase = await createClient()
       const tableName = process.env.NEXT_PUBLIC_SUPABASE_MESSAGES_TABLE || "messages"
       console.log("[v0] Using table:", tableName)
 
@@ -75,12 +72,12 @@ export async function POST(request: NextRequest) {
       // Send notification email to business
       const businessNotification = createContactNotificationEmail(contactData)
       const businessEmailResult = await sendEmail(businessNotification)
-      console.log("[v0] Business email sent:", !!businessEmailResult)
+      console.log("[v0] Business email sent:", businessEmailResult.success)
 
       // Send confirmation email to customer
       const customerConfirmation = createContactConfirmationEmail(contactData)
       const customerEmailResult = await sendEmail(customerConfirmation)
-      console.log("[v0] Customer email sent:", !!customerEmailResult)
+      console.log("[v0] Customer email sent:", customerEmailResult.success)
 
       console.log("[v0] All processing complete")
 
@@ -90,8 +87,8 @@ export async function POST(request: NextRequest) {
         data: contactData,
         supabaseId: supabaseResult?.[0]?.id || null,
         emailsSent: {
-          business: !!businessEmailResult,
-          customer: !!customerEmailResult,
+          business: businessEmailResult.success,
+          customer: customerEmailResult.success,
         },
       })
     } catch (emailError) {
