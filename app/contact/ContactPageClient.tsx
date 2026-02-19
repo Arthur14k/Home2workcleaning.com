@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Phone, Mail, Clock, CheckCircle, AlertCircle } from "lucide-react"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 export default function ContactPageClient() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -24,8 +24,7 @@ export default function ContactPageClient() {
     setSubmitStatus({ type: null, message: "" })
 
     try {
-      const form = event.currentTarget
-      const formData = new FormData(form)
+      const formData = new FormData(event.currentTarget)
 
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -39,7 +38,8 @@ export default function ContactPageClient() {
           type: "success",
           message: result.message,
         })
-        form.reset()
+        // Reset form
+        event.currentTarget.reset()
       } else {
         setSubmitStatus({
           type: "error",
