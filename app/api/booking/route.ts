@@ -49,10 +49,32 @@ export async function POST(req: Request) {
     }
 
     // Use @supabase/supabase-js directly (no cookies needed in API routes)
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    )
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    console.log("[v0] Supabase URL exists:", !!supabaseUrl)
+    console.log("[v0] Supabase Key exists:", !!supabaseKey)
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("[v0] Missing Supabase env vars")
+      return NextResponse.json(
+        { success: false, message: "Server configuration error." },
+        { status: 500 },
+      )
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    console.log("[v0] Inserting booking with data:", {
+      service_type: serviceType,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      city,
+      postcode,
+      preferred_date: preferredDate,
+      preferred_time: preferredTime,
+    })
 
     const { error } = await supabase.from("bookings").insert({
       service_type: serviceType,
@@ -74,12 +96,17 @@ export async function POST(req: Request) {
     })
 
     if (error) {
-      console.error("Supabase insert error:", error)
+      console.error("[v0] Supabase insert error code:", error.code)
+      console.error("[v0] Supabase insert error message:", error.message)
+      console.error("[v0] Supabase insert error details:", error.details)
+      console.error("[v0] Supabase insert error hint:", error.hint)
       return NextResponse.json(
         { success: false, message: "Failed to save booking." },
         { status: 500 },
       )
     }
+
+    console.log("[v0] Booking saved successfully")
 
     // Email notification - wrapped in try/catch so it never kills the request
     try {
