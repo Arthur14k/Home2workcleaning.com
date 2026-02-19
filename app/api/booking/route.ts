@@ -1,120 +1,127 @@
+// app/api/booking/route.ts
+
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
-import { notifyEmail } from "@/lib/resend"
+import { createClient } from "@/lib/supabase/server"
+import {
+  sendEmail,
+  createBookingNotificationEmail,
+  createBookingConfirmationEmail,
+} from "@/lib/resend"
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    const serviceType = formData.get("serviceType")?.toString()
-    const firstName = formData.get("firstName")?.toString()
-    const lastName = formData.get("lastName")?.toString()
+    // Required fields
+    const service_type = formData.get("service_type")?.toString()
+    const first_name = formData.get("first_name")?.toString()
+    const last_name = formData.get("last_name")?.toString()
     const email = formData.get("email")?.toString()
     const phone = formData.get("phone")?.toString()
     const address = formData.get("address")?.toString()
     const city = formData.get("city")?.toString()
     const postcode = formData.get("postcode")?.toString()
     const rooms = formData.get("rooms")?.toString()
-    const cleaningType = formData.get("cleaningType")?.toString()
+    const cleaning_type = formData.get("cleaning_type")?.toString()
     const frequency = formData.get("frequency")?.toString()
-    const preferredTime = formData.get("preferredTime")?.toString()
-    const preferredDate = formData.get("preferredDate")?.toString()
+    const preferred_time = formData.get("preferred_time")?.toString()
 
-    const propertySize = formData.get("propertySize")
-      ? Number(formData.get("propertySize"))
+    const preferred_date = formData.get("preferred_date")?.toString()
+
+    const property_size = formData.get("property_size")
+      ? Number(formData.get("property_size"))
       : null
 
-    const specialInstructions =
-      formData.get("specialInstructions")?.toString() || null
+    const special_instruc =
+      formData.get("special_instructions")?.toString() || null
 
+    // Validation
     if (
-      !serviceType ||
-      !firstName ||
-      !lastName ||
+      !service_type ||
+      !first_name ||
+      !last_name ||
       !email ||
       !phone ||
       !address ||
       !city ||
       !postcode ||
       !rooms ||
-      !cleaningType ||
+      !cleaning_type ||
       !frequency ||
-      !preferredDate ||
-      !preferredTime
+      !preferred_date ||
+      !preferred_time
     ) {
       return NextResponse.json(
         { success: false, message: "Missing required fields." },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-    if (!supabaseUrl || !supabaseKey) {
-      return NextResponse.json(
-        { success: false, message: "Server configuration error." },
-        { status: 500 },
-      )
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey)
+    const supabase = createClient()
 
     const { error } = await supabase.from("bookings").insert({
-      service_type: serviceType,
-      first_name: firstName,
-      last_name: lastName,
+      service_type,
+      first_name,
+      last_name,
       email,
       phone,
       address,
       city,
       postcode,
-      property_size: propertySize,
+      property_size,
       rooms,
-      cleaning_type: cleaningType,
+      cleaning_type,
       frequency,
-      preferred_date: preferredDate,
-      preferred_time: preferredTime,
-      special_instructions: specialInstructions,
+      preferred_date,
+      preferred_time,
+      special_instruc,
       status: "pending",
     })
 
     if (error) {
-      console.error("Supabase insert error:", error.message)
+      console.error("Supabase insert error:", error)
       return NextResponse.json(
         { success: false, message: "Failed to save booking." },
-        { status: 500 },
+        { status: 500 }
       )
     }
 
-    // Email notification - wrapped in try/catch so it never kills the request
+    // Send emails (NON-BLOCKING)
     try {
-      await notifyEmail({
-        subject: "New Booking Received",
-        html: `
-          <h2>New Booking</h2>
-          <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
-          <p><strong>Service:</strong> ${cleaningType}</p>
-          <p><strong>Date:</strong> ${preferredDate}</p>
-          <p><strong>Time:</strong> ${preferredTime}</p>
-        `,
-      })
+      const bookingData = {
+        serviceType: service_type,
+        firstName: first_name,
+        lastName: last_name,
+        email,
+        phone,
+        address,
+        city,
+        zipCode: postcode,
+        cleaningType: cleaning_type,
+        frequency,
+        preferredDate: preferred_date,
+        preferredTime: preferred_time,
+        propertySize: property_size,
+        rooms,
+        specialInstructions: special_instruc,
+      }
+
+      await sendEmail(createBookingNotificationEmail(bookingData))
+      await sendEmail(createBookingConfirmationEmail(bookingData))
     } catch (emailError) {
-      console.error("Email notification failed:", emailError)
-      // Continue - booking was saved, email failure is non-critical
+      console.error("Email send failed (booking still saved):", emailError)
     }
 
     return NextResponse.json({
       success: true,
-      message: "Booking received successfully.",
+      message: "Booking saved successfully.",
     })
   } catch (err) {
     console.error("Booking API error:", err)
+
     return NextResponse.json(
       { success: false, message: "Unexpected server error." },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }
