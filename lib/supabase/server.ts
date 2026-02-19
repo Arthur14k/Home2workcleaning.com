@@ -1,27 +1,27 @@
 // lib/supabase/server.ts
+
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 
 /**
- * Creates a Supabase server client.
- * Safe for API routes and server components.
- * Uses SERVICE ROLE key (server-side only).
+ * Server-side Supabase client
+ * Used ONLY in API routes & server components.
  */
-export async function createClient() {
-  const cookieStore = await cookies()
+export function createClient() {
+  const cookieStore = cookies()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
   if (!supabaseUrl) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL")
+    throw new Error("NEXT_PUBLIC_SUPABASE_URL is missing")
   }
 
-  if (!supabaseServiceKey) {
-    throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY")
+  if (!serviceRoleKey) {
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY is missing")
   }
 
-  return createServerClient(supabaseUrl, supabaseServiceKey, {
+  return createServerClient(supabaseUrl, serviceRoleKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll()
@@ -32,7 +32,7 @@ export async function createClient() {
             cookieStore.set(name, value, options)
           )
         } catch {
-          // Ignore if called from Server Component
+          // Safe ignore in server components
         }
       },
     },
