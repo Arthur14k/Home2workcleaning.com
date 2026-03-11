@@ -3,10 +3,10 @@
 import { useState } from "react"
 
 export default function BookingPageClient() {
-  const [submitStatus, setSubmitStatus] = useState<{
-    type: "success" | "error" | null
-    message: string
-  }>({ type: null, message: "" })
+  const [submitStatus, setSubmitStatus] = useState({
+    type: null as "success" | "error" | null,
+    message: "",
+  })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -124,7 +124,6 @@ export default function BookingPageClient() {
             required
             className="border p-3 rounded"
           />
-
         </div>
 
         {/* ADDRESS */}
@@ -157,12 +156,10 @@ export default function BookingPageClient() {
             placeholder="Property size (sq ft)"
             className="border p-3 rounded"
           />
-
         </div>
 
         {/* PROPERTY DETAILS */}
         <div>
-
           <select
             name="rooms"
             required
@@ -173,7 +170,6 @@ export default function BookingPageClient() {
             <option>3-4 rooms</option>
             <option>5+ rooms</option>
           </select>
-
         </div>
 
         {/* CLEANING DETAILS */}
@@ -201,7 +197,6 @@ export default function BookingPageClient() {
             <option>Bi-weekly</option>
             <option>Monthly</option>
           </select>
-
         </div>
 
         {/* DATE + TIME */}
@@ -221,24 +216,24 @@ export default function BookingPageClient() {
           >
             <option value="">Preferred time *</option>
 
-            <option value="8:00 AM - 10:00 AM">
-              8:00 AM - 10:00 AM
+            <option value="8:00AM -10:00AM">
+              8:00AM -10:00AM
             </option>
 
-            <option value="10:00 AM - 12:00 PM">
-              10:00 AM - 12:00 PM
+            <option value="10:00AM -12:00PM">
+              10:00AM -12:00PM
             </option>
 
-            <option value="12:00 PM - 2:00 PM">
-              12:00 PM - 2:00 PM
+            <option value="12:00PM - 14:00PM">
+              12:00PM - 14:00PM
             </option>
 
-            <option value="2:00 PM - 4:00 PM">
-              2:00 PM - 4:00 PM
+            <option value="14:00PM - 16:00PM">
+              14:00PM - 16:00PM
             </option>
 
-            <option value="4:00 PM - 6:00 PM">
-              4:00 PM - 6:00 PM
+            <option value="16:00PM - 18:00PM">
+              16:00PM - 18:00PM
             </option>
 
           </select>
