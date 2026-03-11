@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Calendar, ClipboardCheck, CheckCircle, Phone, Mail, Clock } from "lucide-react"
+import { Calendar, ClipboardCheck, CheckCircle, Phone, Mail } from "lucide-react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -244,29 +244,17 @@ export default function BookingPageClient() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Need Help?</CardTitle>
+                  <CardDescription>Have questions about our services or need a custom quote?</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center gap-3">
+                  <a href="tel:07526229926" className="flex items-center gap-3 hover:text-primary transition-colors">
                     <Phone className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="text-sm font-medium">Call Us</p>
-                      <p className="text-sm text-muted-foreground">0800 123 4567</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-primary font-medium">07526229926</span>
+                  </a>
+                  <a href="mailto:Contact@home2workcleaning.com" className="flex items-center gap-3 hover:text-primary transition-colors">
                     <Mail className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="text-sm font-medium">Email Us</p>
-                      <p className="text-sm text-muted-foreground">info@home2work.com</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="text-sm font-medium">Working Hours</p>
-                      <p className="text-sm text-muted-foreground">Mon-Sat: 8am - 6pm</p>
-                    </div>
-                  </div>
+                    <span className="text-sm text-primary font-medium">Contact@home2workcleaning.com</span>
+                  </a>
                 </CardContent>
               </Card>
             </div>
