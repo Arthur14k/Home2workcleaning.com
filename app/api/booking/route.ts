@@ -12,28 +12,28 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    // Required fields
-    const service_type = formData.get("service_type")?.toString()
-    const first_name = formData.get("first_name")?.toString()
-    const last_name = formData.get("last_name")?.toString()
+    // Required fields (form uses camelCase)
+    const service_type = formData.get("serviceType")?.toString()
+    const first_name = formData.get("firstName")?.toString()
+    const last_name = formData.get("lastName")?.toString()
     const email = formData.get("email")?.toString()
     const phone = formData.get("phone")?.toString()
     const address = formData.get("address")?.toString()
     const city = formData.get("city")?.toString()
     const postcode = formData.get("postcode")?.toString()
     const rooms = formData.get("rooms")?.toString()
-    const cleaning_type = formData.get("cleaning_type")?.toString()
+    const cleaning_type = formData.get("cleaningType")?.toString()
     const frequency = formData.get("frequency")?.toString()
-    const preferred_time = formData.get("preferred_time")?.toString()
+    const preferred_time = formData.get("preferredTime")?.toString()
 
-    const preferred_date = formData.get("preferred_date")?.toString()
+    const preferred_date = formData.get("preferredDate")?.toString()
 
-    const property_size = formData.get("property_size")
-      ? Number(formData.get("property_size"))
+    const property_size = formData.get("propertySize")
+      ? Number(formData.get("propertySize"))
       : null
 
     const special_instruc =
-      formData.get("special_instructions")?.toString() || null
+      formData.get("specialInstructions")?.toString() || null
 
     // Validation
     if (
