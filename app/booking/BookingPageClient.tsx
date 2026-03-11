@@ -49,6 +49,18 @@ export default function BookingPageClient() {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
+      {/* Hero Section */}
+      <section 
+        className="relative h-64 flex items-center justify-center bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/booking-hero.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative z-10 text-center text-white">
+          <h1 className="text-4xl font-bold mb-2">Book Your Cleaning</h1>
+          <p className="text-lg opacity-90">Schedule your professional cleaning service today</p>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-10 border-b">
         <div className="container mx-auto px-4">
