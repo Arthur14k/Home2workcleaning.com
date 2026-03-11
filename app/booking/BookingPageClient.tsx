@@ -15,7 +15,8 @@ export default function BookingPageClient() {
     setIsSubmitting(true)
 
     try {
-      const formData = new FormData(event.currentTarget)
+      const form = event.currentTarget
+      const formData = new FormData(form)
 
       const response = await fetch("/api/booking", {
         method: "POST",
@@ -29,8 +30,7 @@ export default function BookingPageClient() {
           type: "success",
           message: result.message,
         })
-
-        event.currentTarget.reset()
+        form.reset()
       } else {
         setSubmitStatus({
           type: "error",

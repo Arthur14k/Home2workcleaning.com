@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { error } = await supabase.from("bookings").insert({
       service_type,
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
       frequency,
       preferred_date,
       preferred_time,
-      special_instruc,
+      special_instructions: special_instruc,
       status: "pending",
     })
 
