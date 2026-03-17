@@ -65,18 +65,35 @@ export async function notifyEmail(opts: {
    Booking emails
 ====================================================== */
 export function createBookingNotificationEmail(data: any) {
+  const isCommercial = data.serviceType === "Commercial"
+  
   const specialInstructionsHtml = data.specialInstructions 
     ? `<h3 style="color: #374151; margin-top: 20px;">Special Instructions</h3>
        <p style="background: #f3f4f6; padding: 15px; border-radius: 8px;">${data.specialInstructions}</p>`
     : ''
 
+  const addonsHtml = data.addons 
+    ? `<tr><td style="padding: 8px 0; color: #6b7280;">Add-ons:</td><td style="padding: 8px 0;">${data.addons}</td></tr>`
+    : ''
+
+  const totalPriceHtml = data.totalPrice 
+    ? `<div style="background: #dcfce7; padding: 15px; border-radius: 8px; margin-top: 20px;">
+         <p style="margin: 0; font-size: 18px; font-weight: 600; color: #166534;">Total Price: £${data.totalPrice}</p>
+       </div>`
+    : ''
+
+  const commercialFieldsHtml = isCommercial 
+    ? `<tr><td style="padding: 8px 0; color: #6b7280;">Business Type:</td><td style="padding: 8px 0; font-weight: 600;">${data.businessType || 'N/A'}</td></tr>
+       <tr><td style="padding: 8px 0; color: #6b7280;">Floors:</td><td style="padding: 8px 0;">${data.floors || 'N/A'}</td></tr>`
+    : ''
+
   return {
     to: process.env.NOTIFY_TO!,
     from: process.env.NOTIFY_FROM!,
-    subject: `New Booking – ${data.firstName} ${data.lastName}`,
+    subject: `New ${isCommercial ? 'Quote Request' : 'Booking'} – ${data.firstName} ${data.lastName}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">New Booking Request</h2>
+        <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">New ${isCommercial ? 'Quote Request' : 'Booking Request'}</h2>
         
         <h3 style="color: #374151; margin-top: 20px;">Client Information</h3>
         <table style="width: 100%; border-collapse: collapse;">
@@ -92,21 +109,26 @@ export function createBookingNotificationEmail(data: any) {
           <tr><td style="padding: 8px 0; color: #6b7280;">Postcode:</td><td style="padding: 8px 0;">${data.zipCode || data.postcode || 'N/A'}</td></tr>
           <tr><td style="padding: 8px 0; color: #6b7280;">Property Size:</td><td style="padding: 8px 0;">${data.propertySize ? data.propertySize + ' sq ft' : 'Not specified'}</td></tr>
           <tr><td style="padding: 8px 0; color: #6b7280;">Rooms:</td><td style="padding: 8px 0;">${data.rooms}</td></tr>
+          <tr><td style="padding: 8px 0; color: #6b7280;">Bathrooms:</td><td style="padding: 8px 0;">${data.bathrooms || 'N/A'}</td></tr>
         </table>
 
         <h3 style="color: #374151; margin-top: 20px;">Service Details</h3>
         <table style="width: 100%; border-collapse: collapse;">
           <tr><td style="padding: 8px 0; color: #6b7280;">Service Type:</td><td style="padding: 8px 0; font-weight: 600;">${data.serviceType}</td></tr>
+          ${commercialFieldsHtml}
           <tr><td style="padding: 8px 0; color: #6b7280;">Cleaning Type:</td><td style="padding: 8px 0; font-weight: 600;">${data.cleaningType}</td></tr>
           <tr><td style="padding: 8px 0; color: #6b7280;">Frequency:</td><td style="padding: 8px 0;">${data.frequency}</td></tr>
           <tr><td style="padding: 8px 0; color: #6b7280;">Preferred Date:</td><td style="padding: 8px 0; font-weight: 600;">${data.preferredDate}</td></tr>
           <tr><td style="padding: 8px 0; color: #6b7280;">Preferred Time:</td><td style="padding: 8px 0; font-weight: 600;">${data.preferredTime}</td></tr>
+          ${addonsHtml}
         </table>
+
+        ${totalPriceHtml}
 
         ${specialInstructionsHtml}
 
         <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
-          This booking was submitted via Home2Work Cleaning website.
+          This ${isCommercial ? 'quote request' : 'booking'} was submitted via Home2Work Cleaning website.
         </p>
       </div>
     `,
@@ -114,24 +136,40 @@ export function createBookingNotificationEmail(data: any) {
 }
 
 export function createBookingConfirmationEmail(data: any) {
+  const isCommercial = data.serviceType === "Commercial"
+  
+  const totalPriceHtml = data.totalPrice 
+    ? `<p><strong>Estimated Total:</strong> £${data.totalPrice}</p>`
+    : ''
+
+  const addonsHtml = data.addons 
+    ? `<p><strong>Add-ons:</strong> ${data.addons}</p>`
+    : ''
+
   return {
     to: data.email,
     from: process.env.NOTIFY_FROM!,
-    subject: "Your Booking Request - Home2Work Cleaning",
+    subject: isCommercial 
+      ? "Your Quote Request - Home2Work Cleaning" 
+      : "Your Booking Request - Home2Work Cleaning",
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #2563eb;">Thank You for Your Booking!</h2>
+        <h2 style="color: #2563eb;">${isCommercial ? 'Thank You for Your Quote Request!' : 'Thank You for Your Booking!'}</h2>
         
         <p>Hi ${data.firstName},</p>
         
-        <p>We have received your cleaning service request and will confirm your appointment shortly.</p>
+        <p>${isCommercial 
+          ? 'We have received your quote request and will provide a tailored quote within 2 hours.' 
+          : 'We have received your cleaning service request and will confirm your appointment shortly.'}</p>
 
         <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: #374151;">Booking Summary</h3>
+          <h3 style="margin-top: 0; color: #374151;">${isCommercial ? 'Quote Request Summary' : 'Booking Summary'}</h3>
           <p><strong>Service:</strong> ${data.serviceType} - ${data.cleaningType}</p>
           <p><strong>Date:</strong> ${data.preferredDate}</p>
           <p><strong>Time:</strong> ${data.preferredTime}</p>
           <p><strong>Address:</strong> ${data.address}, ${data.city}, ${data.zipCode || data.postcode || ''}</p>
+          ${addonsHtml}
+          ${totalPriceHtml}
         </div>
 
         <p>If you have any questions, please do not hesitate to contact us.</p>

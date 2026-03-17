@@ -25,8 +25,16 @@ export async function POST(req: Request) {
     const cleaning_type = formData.get("cleaningType")?.toString()
     const frequency = formData.get("frequency")?.toString()
     const preferred_time = formData.get("preferredTime")?.toString()
-
     const preferred_date = formData.get("preferredDate")?.toString()
+
+    // New fields
+    const bathrooms = formData.get("bathrooms")?.toString() || null
+    const addons = formData.get("addons")?.toString() || null
+    const total_price = formData.get("totalPrice") 
+      ? Number(formData.get("totalPrice")) 
+      : null
+    const business_type = formData.get("businessType")?.toString() || null
+    const floors = formData.get("floors")?.toString() || null
 
     const property_size = formData.get("propertySize")
       ? Number(formData.get("propertySize"))
@@ -76,6 +84,12 @@ export async function POST(req: Request) {
       preferred_time,
       special_instructions: special_instruc,
       status: "pending",
+      // New fields
+      bathrooms,
+      addons,
+      total_price,
+      business_type,
+      floors,
     })
 
     if (error) {
@@ -104,6 +118,12 @@ export async function POST(req: Request) {
         propertySize: property_size,
         rooms,
         specialInstructions: special_instruc,
+        // New fields
+        bathrooms,
+        addons,
+        totalPrice: total_price,
+        businessType: business_type,
+        floors,
       }
 
       await sendEmail(createBookingNotificationEmail(bookingData))
