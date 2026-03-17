@@ -94,7 +94,7 @@ export default function ServicesPage() {
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Light fixtures and ceiling fans</span>
+                      <span>Wall spots and door handles</span>
                     </li>
                   </ul>
                 </div>
@@ -156,7 +156,7 @@ export default function ServicesPage() {
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Retail & Medical</h3>
+                  <h3 className="text-xl font-semibold mb-3">Retail</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
@@ -164,7 +164,7 @@ export default function ServicesPage() {
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Medical facility cleaning</span>
+                      <span>Display and shelf cleaning</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
