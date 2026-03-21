@@ -328,7 +328,12 @@ export default function BookingPageClient() {
                                 name="cleaningType" 
                                 required 
                                 value={cleaningType}
-                                onChange={(e) => setCleaningType(e.target.value)}
+                                onChange={(e) => {
+                                  setCleaningType(e.target.value)
+                                  if (e.target.value !== "Standard Cleaning") {
+                                    setSelectedAddons([])
+                                  }
+                                }}
                                 className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
                                 <option value="">Select cleaning type</option>
@@ -384,30 +389,32 @@ export default function BookingPageClient() {
                           </div>
                         </div>
 
-                        {/* Add-ons Section */}
-                        <div>
-                          <h3 className="text-sm font-semibold mb-3">Add-ons (Optional)</h3>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                            {Object.keys(PRICING.addons).map((addon) => (
-                              <label
-                                key={addon}
-                                className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all ${
-                                  selectedAddons.includes(addon)
-                                    ? "border-blue-500 bg-blue-50"
-                                    : "border-input hover:border-blue-300"
-                                }`}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={selectedAddons.includes(addon)}
-                                  onChange={() => toggleAddon(addon)}
-                                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                                />
-                                <span className="text-sm">{addon}</span>
-                              </label>
-                            ))}
+                        {/* Add-ons Section - Only for Standard Cleaning */}
+                        {cleaningType === "Standard Cleaning" && (
+                          <div>
+                            <h3 className="text-sm font-semibold mb-3">Add-ons (Optional)</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                              {Object.keys(PRICING.addons).map((addon) => (
+                                <label
+                                  key={addon}
+                                  className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-all ${
+                                    selectedAddons.includes(addon)
+                                      ? "border-blue-500 bg-blue-50"
+                                      : "border-input hover:border-blue-300"
+                                  }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedAddons.includes(addon)}
+                                    onChange={() => toggleAddon(addon)}
+                                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                                  />
+                                  <span className="text-sm">{addon}</span>
+                                </label>
+                              ))}
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </>
                     )}
 
@@ -523,11 +530,10 @@ export default function BookingPageClient() {
                                 </>
                               ) : (
                                 <>
-                                  <option value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM</option>
-                                  <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
-                                  <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
-                                  <option value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</option>
-                                  <option value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</option>
+                                  <option value="8:00 AM - 11:00 AM">8:00 AM - 11:00 AM</option>
+                                  <option value="11:00 AM - 14:00 PM">11:00 AM - 14:00 PM</option>
+                                  <option value="14:00 PM - 17:00 PM">14:00 PM - 17:00 PM</option>
+                                  <option value="17:00 PM - 20:00 PM">17:00 PM - 20:00 PM</option>
                                 </>
                               )}
                             </select>
