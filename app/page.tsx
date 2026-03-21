@@ -119,19 +119,19 @@ export default function HomePage() {
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                    Regular house cleaning
+                    Standard Cleaning
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                    Deep cleaning services
+                    Deep Cleaning
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                    Move-in/move-out cleaning
+                    End of Tenancy
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                    Post-construction cleanup
+                    Move In/Out
                   </li>
                 </ul>
                 <Button asChild variant="outline">
@@ -147,19 +147,19 @@ export default function HomePage() {
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                    Office cleaning
+                    Office Cleaning
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                    Retail space maintenance
+                    Retail Store Cleaning
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                    Medical facility cleaning
+                    Restaurant/Cafe Cleaning
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                    Janitorial services
+                    Gym & Warehouse Cleaning
                   </li>
                 </ul>
                 <Button asChild variant="outline">

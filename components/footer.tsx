@@ -76,11 +76,11 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Our Services</h3>
             <ul className="space-y-2">
-              <li className="text-gray-300">Residential Cleaning</li>
-              <li className="text-gray-300">Commercial Cleaning</li>
+              <li className="text-gray-300">Standard Cleaning</li>
               <li className="text-gray-300">Deep Cleaning</li>
-              <li className="text-gray-300">Move In/Out Cleaning</li>
-              <li className="text-gray-300">Post-Construction</li>
+              <li className="text-gray-300">End of Tenancy</li>
+              <li className="text-gray-300">Move In/Out</li>
+              <li className="text-gray-300">Commercial Cleaning</li>
             </ul>
           </div>
 
