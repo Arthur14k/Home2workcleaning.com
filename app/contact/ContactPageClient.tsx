@@ -160,10 +160,17 @@ export default function ContactPageClient() {
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">Business Hours</h3>
-                        <div className="text-gray-700 space-y-1">
-                          <p>Monday - Friday: 8:00AM - 19:00PM</p>
-                          <p>Saturday: 9:00AM - 18:00PM</p>
-                          <p>Sunday: Closed</p>
+                        <div className="text-gray-700 space-y-2">
+                          <div>
+                            <p className="font-medium">Residential Cleaning</p>
+                            <p>Monday - Saturday: 8:00 AM - 20:00 PM</p>
+                            <p>Sunday: Closed</p>
+                          </div>
+                          <div>
+                            <p className="font-medium">Commercial Cleaning</p>
+                            <p>Monday - Saturday: 5:00 AM - 23:00 PM</p>
+                            <p>Sunday: Closed</p>
+                          </div>
                         </div>
                       </div>
                     </div>
