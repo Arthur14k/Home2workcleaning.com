@@ -513,11 +513,23 @@ export default function BookingPageClient() {
                             <label className="block text-sm mb-1">Preferred Time *</label>
                             <select name="preferredTime" required className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                               <option value="">Select time</option>
-                              <option value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM</option>
-                              <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
-                              <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
-                              <option value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</option>
-                              <option value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</option>
+                              {serviceType === "Commercial" ? (
+                                <>
+                                  <option value="5:00 AM - 8:00 AM">5:00 AM - 8:00 AM</option>
+                                  <option value="8:00 AM - 11:00 AM">8:00 AM - 11:00 AM</option>
+                                  <option value="14:00 PM - 17:00 PM">14:00 PM - 17:00 PM</option>
+                                  <option value="17:00 PM - 20:00 PM">17:00 PM - 20:00 PM</option>
+                                  <option value="20:00 PM - 23:00 PM">20:00 PM - 23:00 PM</option>
+                                </>
+                              ) : (
+                                <>
+                                  <option value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM</option>
+                                  <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
+                                  <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
+                                  <option value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</option>
+                                  <option value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</option>
+                                </>
+                              )}
                             </select>
                           </div>
                         </div>
