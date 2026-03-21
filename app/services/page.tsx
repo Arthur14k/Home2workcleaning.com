@@ -56,67 +56,105 @@ export default function ServicesPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Regular House Cleaning</h3>
+                  <h3 className="text-xl font-semibold mb-3">Standard Cleaning</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Weekly, bi-weekly, or monthly service</span>
+                      <span>Vacuuming and mopping all floors</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Kitchen and bathroom deep cleaning</span>
+                      <span>Dusting surfaces, shelves and furniture</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Inside appliances and cabinets</span>
+                      <span>Wiping down kitchen counters and hob</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Trash removal and bed making</span>
+                      <span>Cleaning bathrooms (toilet, sink, shower/bath)</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Emptying bins</span>
                     </li>
                   </ul>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Deep Cleaning Services</h3>
+                  <h3 className="text-xl font-semibold mb-3">Deep Cleaning</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Detailed cleaning of all surfaces</span>
+                      <span>Everything in Standard Cleaning, plus:</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Dusting, vacuuming, and mopping</span>
+                      <span>Inside oven, fridge and microwave</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Baseboards and window sills</span>
+                      <span>Inside cupboards and drawers</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Wall spots and door handles</span>
+                      <span>Scrubbing grout and tiles</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Skirting boards, door frames and light switches</span>
                     </li>
                   </ul>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Specialized Services</h3>
+                  <h3 className="text-xl font-semibold mb-3">End of Tenancy</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Move-in/move-out cleaning</span>
+                      <span>Everything in Deep Cleaning, plus:</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Post-construction cleanup</span>
+                      <span>Full oven strip and degrease</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Holiday and event preparation</span>
+                      <span>Inside all wardrobes and storage units</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>One-time cleaning services</span>
+                      <span>Cleaning walls and removing scuff marks</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Full carpet clean (if applicable)</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Move In/Out</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Everything in End of Tenancy, plus:</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Full sanitisation of all surfaces</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Extra attention to kitchen and bathroom hygiene</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Carpet shampooing</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Checking lesser noticed areas (utility rooms, storage)</span>
                     </li>
                   </ul>
                 </div>
@@ -138,29 +176,33 @@ export default function ServicesPage() {
                   <ul className="space-y-2">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Daily, weekly, or monthly service</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
                       <span>Workstation and common area cleaning</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Restroom sanitization</span>
+                      <span>Restroom sanitisation</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
                       <span>Floor care and maintenance</span>
                     </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Bin emptying and waste removal</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Kitchen/breakroom cleaning</span>
+                    </li>
                   </ul>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Retail Cleaning</h3>
+                  <h3 className="text-xl font-semibold mb-3">Retail Store Cleaning</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Retail space maintenance</span>
+                      <span>Shop floor vacuuming and mopping</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
@@ -168,7 +210,11 @@ export default function ServicesPage() {
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Specialized sanitization protocols</span>
+                      <span>Fitting room maintenance</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Restroom sanitisation</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
@@ -178,23 +224,79 @@ export default function ServicesPage() {
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Janitorial Services</h3>
+                  <h3 className="text-xl font-semibold mb-3">Restaurant/Cafe Cleaning</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Complete facility maintenance</span>
+                      <span>Kitchen surface and equipment cleaning</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Supply restocking</span>
+                      <span>Floor degreasing and mopping</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Waste management</span>
+                      <span>Restroom deep sanitisation</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Emergency cleaning services</span>
+                      <span>Front of house cleaning</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Waste and recycling management</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Gym Cleaning</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Equipment sanitisation and wipe down</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Changing room and shower cleaning</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Restroom deep clean</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Floor scrubbing and disinfecting</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Reception and common area maintenance</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Warehouse Cleaning</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Floor sweeping, scrubbing and mopping</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Loading bay and storage area cleaning</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Restroom and welfare facility cleaning</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Waste and debris removal</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>Health and safety compliance cleaning</span>
                     </li>
                   </ul>
                 </div>
