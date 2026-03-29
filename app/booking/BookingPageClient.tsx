@@ -10,10 +10,25 @@ import { Button } from "@/components/ui/button"
 // Pricing configuration
 const PRICING = {
   cleaningType: {
-    "Standard Cleaning": 70,
-    "Deep Cleaning": 130,
-    "End of Tenancy": 170,
-    "Move In/Out": 155,
+    "Standard Cleaning": 90,
+    "Deep Cleaning": 180,
+    "End of Tenancy": 220,
+    "Move In/Out": 200,
+  },
+  // Frequency discounts (only apply to Standard and Deep Cleaning)
+  frequencyPrices: {
+    "Standard Cleaning": {
+      "One-time service": 90,
+      "Monthly": 85,
+      "Fortnightly": 83,
+      "Weekly": 81,
+    },
+    "Deep Cleaning": {
+      "One-time service": 180,
+      "Monthly": 171,
+      "Fortnightly": 166,
+      "Weekly": 162,
+    },
   },
   rooms: {
     "1-2 rooms": 0,
@@ -48,6 +63,7 @@ export default function BookingPageClient() {
   const [cleaningType, setCleaningType] = useState("")
   const [rooms, setRooms] = useState("")
   const [bathrooms, setBathrooms] = useState("")
+  const [frequency, setFrequency] = useState("One-time service")
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
   
   // Commercial form state
@@ -58,12 +74,25 @@ export default function BookingPageClient() {
   const priceBreakdown = useMemo(() => {
     if (serviceType !== "Residential") return null
     
-    const items: { label: string; price: number }[] = []
+    const items: { label: string; price: number; discount?: string }[] = []
     let total = 0
 
     if (cleaningType && PRICING.cleaningType[cleaningType as keyof typeof PRICING.cleaningType]) {
-      const price = PRICING.cleaningType[cleaningType as keyof typeof PRICING.cleaningType]
-      items.push({ label: cleaningType, price })
+      // Check if frequency discount applies (only for Standard and Deep Cleaning)
+      const frequencyPrices = PRICING.frequencyPrices[cleaningType as keyof typeof PRICING.frequencyPrices]
+      let price: number
+      let discountLabel: string | undefined
+      
+      if (frequencyPrices && frequency !== "One-time service") {
+        price = frequencyPrices[frequency as keyof typeof frequencyPrices] || PRICING.cleaningType[cleaningType as keyof typeof PRICING.cleaningType]
+        const originalPrice = PRICING.cleaningType[cleaningType as keyof typeof PRICING.cleaningType]
+        const discountPercent = Math.round((1 - price / originalPrice) * 100)
+        discountLabel = `${discountPercent}% ${frequency} discount`
+      } else {
+        price = PRICING.cleaningType[cleaningType as keyof typeof PRICING.cleaningType]
+      }
+      
+      items.push({ label: cleaningType, price, discount: discountLabel })
       total += price
     }
 
@@ -92,7 +121,7 @@ export default function BookingPageClient() {
     })
 
     return { items, total }
-  }, [serviceType, cleaningType, rooms, bathrooms, selectedAddons])
+  }, [serviceType, cleaningType, rooms, bathrooms, frequency, selectedAddons])
 
   const toggleAddon = (addon: string) => {
     setSelectedAddons((prev) =>
@@ -126,12 +155,13 @@ export default function BookingPageClient() {
       const result = await response.json()
 
       if (result.success) {
-        setSubmitStatus({ type: "success", message: result.message })
+setSubmitStatus({ type: "success", message: result.message })
         form.reset()
         setServiceType("")
         setCleaningType("")
         setRooms("")
         setBathrooms("")
+        setFrequency("One-time service")
         setSelectedAddons([])
         setBusinessType("")
         setFloors("")
@@ -379,11 +409,17 @@ export default function BookingPageClient() {
                             </div>
                             <div>
                               <label className="block text-sm mb-1">Frequency</label>
-                              <select name="frequency" required className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                              <select 
+                                name="frequency" 
+                                required 
+                                value={frequency}
+                                onChange={(e) => setFrequency(e.target.value)}
+                                className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              >
                                 <option value="One-time service">One-time service</option>
-                                <option value="Weekly">Weekly</option>
-                                <option value="Bi-weekly">Bi-weekly</option>
-                                <option value="Monthly">Monthly</option>
+                                <option value="Weekly">Weekly (10% off)</option>
+                                <option value="Fortnightly">Fortnightly (8% off)</option>
+                                <option value="Monthly">Monthly (5% off)</option>
                               </select>
                             </div>
                           </div>
@@ -496,7 +532,7 @@ export default function BookingPageClient() {
                             <select name="frequency" required className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                               <option value="One-time service">One-time service</option>
                               <option value="Weekly">Weekly</option>
-                              <option value="Bi-weekly">Bi-weekly</option>
+                              <option value="Fortnightly">Fortnightly</option>
                               <option value="Monthly">Monthly</option>
                             </select>
                           </div>
@@ -561,17 +597,22 @@ export default function BookingPageClient() {
                         <h3 className="text-sm font-semibold mb-3">Order Summary</h3>
                         <div className="space-y-2">
                           {priceBreakdown.items.map((item, index) => (
-                            <div key={index} className="flex justify-between items-center text-sm">
-                              <span className="flex items-center gap-2">
-                                {item.label}
-                                {selectedAddons.includes(item.label) && (
-                                  <button
-                                    type="button"
-                                    onClick={() => removeAddon(item.label)}
-                                    className="text-gray-400 hover:text-red-500 transition-colors"
-                                  >
-                                    <X className="w-4 h-4" />
-                                  </button>
+                            <div key={index} className="flex justify-between items-start text-sm">
+                              <span className="flex flex-col">
+                                <span className="flex items-center gap-2">
+                                  {item.label}
+                                  {selectedAddons.includes(item.label) && (
+                                    <button
+                                      type="button"
+                                      onClick={() => removeAddon(item.label)}
+                                      className="text-gray-400 hover:text-red-500 transition-colors"
+                                    >
+                                      <X className="w-4 h-4" />
+                                    </button>
+                                  )}
+                                </span>
+                                {item.discount && (
+                                  <span className="text-xs text-green-600">{item.discount}</span>
                                 )}
                               </span>
                               <span>£{item.price}</span>
