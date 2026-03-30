@@ -51,6 +51,27 @@ const PRICING = {
   },
 }
 
+// Payment details
+const PAYMENT_DETAILS = {
+  paypal: "https://paypal.me/Home2WorkCleaning",
+  bank: {
+    accountName: "Home2Work Cleaning",
+    sortCode: "07-09-76",
+    accountNumber: "07775894",
+  },
+}
+
+interface BookingConfirmation {
+  bookingRef: string
+  firstName: string
+  cleaningType: string
+  preferredDate: string
+  preferredTime: string
+  address: string
+  totalPrice: number
+  serviceType: string
+}
+
 export default function BookingPageClient() {
   const [submitStatus, setSubmitStatus] = useState({
     type: null as "success" | "error" | null,
@@ -58,6 +79,7 @@ export default function BookingPageClient() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [serviceType, setServiceType] = useState("")
+  const [bookingConfirmation, setBookingConfirmation] = useState<BookingConfirmation | null>(null)
   
   // Residential form state
   const [cleaningType, setCleaningType] = useState("")
@@ -155,7 +177,23 @@ export default function BookingPageClient() {
       const result = await response.json()
 
       if (result.success) {
-setSubmitStatus({ type: "success", message: result.message })
+        // For residential bookings, show payment confirmation
+        if (serviceType === "Residential" && priceBreakdown) {
+          const bookingRef = `H2W-${Date.now().toString(36).toUpperCase()}`
+          setBookingConfirmation({
+            bookingRef,
+            firstName: formData.get("firstName") as string,
+            cleaningType: formData.get("cleaningType") as string,
+            preferredDate: formData.get("preferredDate") as string,
+            preferredTime: formData.get("preferredTime") as string,
+            address: `${formData.get("address")}, ${formData.get("city")}, ${formData.get("postcode")}`,
+            totalPrice: priceBreakdown.total,
+            serviceType: "Residential",
+          })
+        } else {
+          // For commercial, just show success message
+          setSubmitStatus({ type: "success", message: result.message })
+        }
         form.reset()
         setServiceType("")
         setCleaningType("")
@@ -192,7 +230,121 @@ setSubmitStatus({ type: "success", message: result.message })
         </div>
       </section>
 
+      {/* Payment Confirmation Screen */}
+      {bookingConfirmation && (
+        <section className="py-12 flex-1">
+          <div className="container mx-auto px-4 max-w-2xl">
+            <Card>
+              <CardHeader className="text-center pb-2">
+                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle2 className="w-8 h-8 text-green-600" />
+                </div>
+                <CardTitle className="text-2xl font-bold text-green-700">Booking Confirmed!</CardTitle>
+                <p className="text-muted-foreground">Thank you, {bookingConfirmation.firstName}. Your booking has been received.</p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Booking Summary */}
+                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                  <h3 className="font-semibold text-sm">Booking Summary</h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <span className="text-muted-foreground">Reference:</span>
+                    <span className="font-medium">{bookingConfirmation.bookingRef}</span>
+                    <span className="text-muted-foreground">Service:</span>
+                    <span>{bookingConfirmation.cleaningType}</span>
+                    <span className="text-muted-foreground">Date:</span>
+                    <span>{bookingConfirmation.preferredDate}</span>
+                    <span className="text-muted-foreground">Time:</span>
+                    <span>{bookingConfirmation.preferredTime}</span>
+                    <span className="text-muted-foreground">Address:</span>
+                    <span>{bookingConfirmation.address}</span>
+                  </div>
+                  <div className="border-t pt-3 mt-3 flex justify-between items-center">
+                    <span className="font-semibold">Total Amount:</span>
+                    <span className="text-xl font-bold text-green-700">£{bookingConfirmation.totalPrice}</span>
+                  </div>
+                </div>
+
+                {/* Payment Options */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-center">Choose Your Payment Method</h3>
+                  
+                  {/* PayPal Option */}
+                  <div className="border rounded-lg p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                        <span className="text-white font-bold text-xs">PP</span>
+                      </div>
+                      <span className="font-semibold">Pay with PayPal</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">Quick and secure payment via PayPal</p>
+                    <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                      <a 
+                        href={`${PAYMENT_DETAILS.paypal}/${bookingConfirmation.totalPrice}GBP`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Pay £{bookingConfirmation.totalPrice} with PayPal
+                      </a>
+                    </Button>
+                  </div>
+
+                  {/* Bank Transfer Option */}
+                  <div className="border rounded-lg p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-gray-700 rounded flex items-center justify-center">
+                        <Building2 className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="font-semibold">Bank Transfer</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">Transfer directly to our bank account</p>
+                    <div className="bg-gray-50 rounded p-3 space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Account Name:</span>
+                        <span className="font-medium">{PAYMENT_DETAILS.bank.accountName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Sort Code:</span>
+                        <span className="font-medium">{PAYMENT_DETAILS.bank.sortCode}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Account Number:</span>
+                        <span className="font-medium">{PAYMENT_DETAILS.bank.accountNumber}</span>
+                      </div>
+                      <div className="flex justify-between border-t pt-2 mt-2">
+                        <span className="text-muted-foreground">Reference:</span>
+                        <span className="font-medium text-blue-600">{bookingConfirmation.bookingRef}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center">
+                      Please use your booking reference as the payment reference
+                    </p>
+                  </div>
+                </div>
+
+                {/* Important Note */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm">
+                  <p className="font-semibold text-blue-800 mb-1">Important:</p>
+                  <p className="text-blue-700">
+                    Your booking will be confirmed once payment is received. A confirmation email has been sent to your email address.
+                  </p>
+                </div>
+
+                {/* Book Another */}
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setBookingConfirmation(null)}
+                >
+                  Book Another Cleaning
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      )}
+
       {/* How It Works */}
+      {!bookingConfirmation && (
       <section className="py-10 border-b">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold text-center mb-10">How It Works</h2>
@@ -221,8 +373,10 @@ setSubmitStatus({ type: "success", message: result.message })
           </div>
         </div>
       </section>
+      )}
 
       {/* Main Content */}
+      {!bookingConfirmation && (
       <main className="flex-1 py-10">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -731,6 +885,7 @@ setSubmitStatus({ type: "success", message: result.message })
           </div>
         </div>
       </main>
+      )}
 
       <Footer />
     </div>
