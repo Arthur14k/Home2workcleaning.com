@@ -579,7 +579,7 @@ export default function BookingPageClient() {
                               </select>
                             </div>
                             <div>
-                              <label className="block text-sm mb-1">Will you be supplying cleaning equipment/materials? *</label>
+                              <label className="block text-sm mb-1">Will You Be Supplying Cleaning Equipment/Materials? *</label>
                               <select 
                                 name="supplyingEquipment" 
                                 required 
