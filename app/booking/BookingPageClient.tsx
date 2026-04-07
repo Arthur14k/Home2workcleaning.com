@@ -86,6 +86,7 @@ export default function BookingPageClient() {
   const [rooms, setRooms] = useState("")
   const [bathrooms, setBathrooms] = useState("")
   const [frequency, setFrequency] = useState("One-time service")
+  const [supplyingEquipment, setSupplyingEquipment] = useState("")
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
   
   // Commercial form state
@@ -200,6 +201,7 @@ export default function BookingPageClient() {
         setRooms("")
         setBathrooms("")
         setFrequency("One-time service")
+        setSupplyingEquipment("")
         setSelectedAddons([])
         setBusinessType("")
         setFloors("")
@@ -574,6 +576,20 @@ export default function BookingPageClient() {
                                 <option value="Weekly">Weekly (10% off)</option>
                                 <option value="Fortnightly">Fortnightly (8% off)</option>
                                 <option value="Monthly">Monthly (5% off)</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-sm mb-1">Will you be supplying cleaning equipment/materials? *</label>
+                              <select 
+                                name="supplyingEquipment" 
+                                required 
+                                value={supplyingEquipment}
+                                onChange={(e) => setSupplyingEquipment(e.target.value)}
+                                className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              >
+                                <option value="">Select an option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
                               </select>
                             </div>
                           </div>
