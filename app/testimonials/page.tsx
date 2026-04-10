@@ -204,7 +204,7 @@ export default function TestimonialsPage() {
               asChild
               size="lg"
               variant="outline"
-              className="text-blue-600 border-white hover:bg-white bg-transparent"
+              className="text-white border-white hover:bg-white hover:text-blue-600 bg-transparent"
             >
               <Link href="/contact">Get Free Quote</Link>
             </Button>
