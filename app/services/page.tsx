@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, Home, Building, Sparkles, Clock } from "lucide-react"
 import Link from "next/link"
-import { Header } from "@/components/header"
+import Header from "@/components/header"
 import { Footer } from "@/components/footer"
 
 export const metadata: Metadata = {

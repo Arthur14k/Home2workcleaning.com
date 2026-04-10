@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu } from "lucide-react"
 
-export function Header() {
+export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
 
   const navigation = [
@@ -79,5 +79,3 @@ export function Header() {
     </header>
   )
 }
-
-export default Header
