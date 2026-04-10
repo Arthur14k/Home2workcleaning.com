@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Home2Work Cleaning - Professional Cleaning Services",
   description: "Professional residential and commercial cleaning services in Ireland",
-  generator: "v0.app",
+  generator: "v0.dev",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
