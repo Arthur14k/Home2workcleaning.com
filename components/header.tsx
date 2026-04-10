@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, Sparkles } from "lucide-react" // Keeping Sparkles as the primary logo icon
+import { Menu } from "lucide-react"
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
@@ -22,12 +22,8 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="p-2.5 bg-blue-100 rounded-lg">
-              {" "}
-              {/* Slightly increased padding */}
-              <Sparkles className="h-7 w-7 text-blue-600" /> {/* Slightly increased icon size */}
-            </div>
-            <span className="text-xl font-bold text-gray-900">Home2Work Cleaning</span> {/* Full name for desktop */}
+            <img src="/images/logo.png" alt="Home2Work Cleaning Logo" className="h-12 w-12 object-contain" />
+            <span className="text-xl font-bold text-gray-900">Home2Work Cleaning</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -56,14 +52,9 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <div className="flex flex-col space-y-4 mt-8">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="p-2.5 bg-blue-100 rounded-lg">
-                    {" "}
-                    {/* Consistent padding */}
-                    <Sparkles className="h-7 w-7 text-blue-600" /> {/* Consistent icon size */}
-                  </div>
-                  <span className="text-xl font-bold text-gray-900">Home2Work Cleaning</span>{" "}
-                  {/* Full name for mobile */}
+                <div className="flex items-center gap-2 mb-8">
+                  <img src="/images/logo.png" alt="Home2Work Cleaning Logo" className="h-12 w-12 object-contain" />
+                  <span className="text-xl font-bold text-gray-900">Home2Work Cleaning</span>
                 </div>
                 {navigation.map((item) => (
                   <Link
