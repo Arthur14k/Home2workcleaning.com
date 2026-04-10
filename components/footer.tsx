@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Sparkles, Phone, Mail, Instagram, Facebook } from "lucide-react"
+import { Phone, Mail, Instagram, Facebook } from "lucide-react"
 
 export function Footer() {
   return (
@@ -9,9 +9,7 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="p-2 bg-blue-600 rounded-lg">
-                <Sparkles className="h-6 w-6 text-white" />
-              </div>
+              <img src="/images/logo.png" alt="Home2Work Cleaning Logo" className="h-12 w-12 object-contain" />
               <span className="text-xl font-bold">Home2Work Cleaning</span>
             </div>
             <p className="text-gray-300">
