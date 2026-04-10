@@ -263,8 +263,8 @@ export default function ContactPageClient() {
       {/* Service Areas */}
       <section className="py-16 px-4 bg-blue-600 text-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Service Areas</h2>
-          <p className="text-lg text-blue-100 mb-8">
+          <h2 className="text-3xl font-bold mb-4">Service Areas</h2>
+          <p className="text-xl mb-8">
             We proudly serve the following areas with our professional cleaning services
           </p>
           <div className="grid md:grid-cols-4 gap-4">
@@ -277,7 +277,7 @@ export default function ContactPageClient() {
             <div>Stockport</div>
             <div>Tameside</div>
           </div>
-          <p className="text-sm text-blue-100 mt-6">
+          <p className="text-sm mt-6">
             Don&apos;t see your area listed? Contact us - we may still be able to serve you!
           </p>
         </div>
