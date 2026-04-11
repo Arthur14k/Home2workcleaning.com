@@ -55,54 +55,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Brand Values Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose Home2Work Cleaning?</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              We're committed to providing exceptional cleaning services that exceed your expectations
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="text-center border-0 shadow-lg">
-              <CardContent className="p-6">
-                <Shield className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Trusted & Insured</h3>
-                <p className="text-gray-600">Fully licensed, bonded, and insured for your peace of mind</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center border-0 shadow-lg">
-              <CardContent className="p-6">
-                <Sparkles className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Eco-Friendly</h3>
-                <p className="text-gray-600">
-                  Safe, non-toxic cleaning products that protect your family and environment
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center border-0 shadow-lg">
-              <CardContent className="p-6">
-                <Clock className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Reliable Service</h3>
-                <p className="text-gray-600">Consistent, punctual service that fits your schedule</p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center border-0 shadow-lg">
-              <CardContent className="p-6">
-                <Users className="h-12 w-12 text-orange-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Experienced Team</h3>
-                <p className="text-gray-600">Professional, trained staff dedicated to quality results</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
       {/* Services Preview */}
       <section className="py-16 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
@@ -165,6 +117,54 @@ export default function HomePage() {
                 <Button asChild variant="outline">
                   <Link href="/services">Learn More</Link>
                 </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Brand Values Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose Home2Work Cleaning?</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              We're committed to providing exceptional cleaning services that exceed your expectations
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Card className="text-center border-0 shadow-lg">
+              <CardContent className="p-6">
+                <Shield className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Trusted & Insured</h3>
+                <p className="text-gray-600">Fully licensed, bonded, and insured for your peace of mind</p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center border-0 shadow-lg">
+              <CardContent className="p-6">
+                <Sparkles className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Eco-Friendly</h3>
+                <p className="text-gray-600">
+                  Safe, non-toxic cleaning products that protect your family and environment
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center border-0 shadow-lg">
+              <CardContent className="p-6">
+                <Clock className="h-12 w-12 text-purple-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Reliable Service</h3>
+                <p className="text-gray-600">Consistent, punctual service that fits your schedule</p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center border-0 shadow-lg">
+              <CardContent className="p-6">
+                <Users className="h-12 w-12 text-orange-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Experienced Team</h3>
+                <p className="text-gray-600">Professional, trained staff dedicated to quality results</p>
               </CardContent>
             </Card>
           </div>
