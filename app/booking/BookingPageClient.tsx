@@ -7,6 +7,11 @@ import Footer from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
+// Promo codes configuration
+const PROMO_CODES: { [key: string]: { discount: number; type: "fixed" | "percent"; description: string } } = {
+  "FIRSTCLEAN": { discount: 10, type: "fixed", description: "First-time customer discount" },
+}
+
 // Pricing configuration
 const PRICING = {
   cleaningType: {
@@ -87,6 +92,9 @@ export default function BookingPageClient() {
   const [bathrooms, setBathrooms] = useState("")
   const [frequency, setFrequency] = useState("One-time service")
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
+  const [promoCode, setPromoCode] = useState("")
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discount: number; description: string } | null>(null)
+  const [promoError, setPromoError] = useState("")
   
   // Commercial form state
   const [businessType, setBusinessType] = useState("")
@@ -155,6 +163,39 @@ export default function BookingPageClient() {
     setSelectedAddons((prev) => prev.filter((a) => a !== addon))
   }
 
+  const applyPromoCode = () => {
+    const code = promoCode.toUpperCase().trim()
+    if (!code) {
+      setPromoError("Please enter a promo code")
+      return
+    }
+    
+    const promo = PROMO_CODES[code]
+    if (promo) {
+      setAppliedPromo({ code, discount: promo.discount, description: promo.description })
+      setPromoError("")
+    } else {
+      setPromoError("Invalid promo code")
+      setAppliedPromo(null)
+    }
+  }
+
+  const removePromoCode = () => {
+    setAppliedPromo(null)
+    setPromoCode("")
+    setPromoError("")
+  }
+
+  // Calculate final total with promo discount
+  const finalTotal = useMemo(() => {
+    if (!priceBreakdown) return 0
+    let total = priceBreakdown.total
+    if (appliedPromo) {
+      total = Math.max(0, total - appliedPromo.discount)
+    }
+    return total
+  }, [priceBreakdown, appliedPromo])
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setIsSubmitting(true)
@@ -165,8 +206,12 @@ export default function BookingPageClient() {
       
       // Add calculated total for residential
       if (serviceType === "Residential" && priceBreakdown) {
-        formData.set("totalPrice", priceBreakdown.total.toString())
+        formData.set("totalPrice", finalTotal.toString())
         formData.set("addons", selectedAddons.join(", "))
+        if (appliedPromo) {
+          formData.set("promoCode", appliedPromo.code)
+          formData.set("promoDiscount", appliedPromo.discount.toString())
+        }
       }
 
       const response = await fetch("/api/booking", {
@@ -187,7 +232,7 @@ export default function BookingPageClient() {
             preferredDate: formData.get("preferredDate") as string,
             preferredTime: formData.get("preferredTime") as string,
             address: `${formData.get("address")}, ${formData.get("city")}, ${formData.get("postcode")}`,
-            totalPrice: priceBreakdown.total,
+            totalPrice: finalTotal,
             serviceType: "Residential",
           })
         } else {
@@ -201,6 +246,9 @@ export default function BookingPageClient() {
         setBathrooms("")
         setFrequency("One-time service")
         setSelectedAddons([])
+        setPromoCode("")
+        setAppliedPromo(null)
+        setPromoError("")
         setBusinessType("")
         setFloors("")
       } else {
@@ -745,6 +793,40 @@ export default function BookingPageClient() {
                       </div>
                     )}
 
+                    {/* Promo Code - Residential Only */}
+                    {serviceType === "Residential" && (
+                      <div>
+                        <label className="block text-sm font-semibold mb-1">Promo Code</label>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            value={promoCode}
+                            onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                            placeholder="Enter promo code"
+                            disabled={!!appliedPromo}
+                            className="flex-1 border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                          />
+                          {appliedPromo ? (
+                            <Button type="button" variant="outline" onClick={removePromoCode}>
+                              Remove
+                            </Button>
+                          ) : (
+                            <Button type="button" variant="outline" onClick={applyPromoCode}>
+                              Apply
+                            </Button>
+                          )}
+                        </div>
+                        {promoError && (
+                          <p className="text-sm text-red-500 mt-1">{promoError}</p>
+                        )}
+                        {appliedPromo && (
+                          <p className="text-sm text-green-600 mt-1">
+                            {appliedPromo.description} - £{appliedPromo.discount} off applied!
+                          </p>
+                        )}
+                      </div>
+                    )}
+
                     {/* Order Summary - Residential Only */}
                     {serviceType === "Residential" && priceBreakdown && priceBreakdown.total > 0 && (
                       <div className="border rounded-lg p-4 bg-gray-50">
@@ -772,12 +854,18 @@ export default function BookingPageClient() {
                               <span>£{item.price}</span>
                             </div>
                           ))}
+                          {appliedPromo && (
+                            <div className="flex justify-between items-center text-sm text-green-600">
+                              <span>Promo: {appliedPromo.code}</span>
+                              <span>-£{appliedPromo.discount}</span>
+                            </div>
+                          )}
                           <div className="border-t pt-2 mt-2 flex justify-between items-center font-semibold">
                             <span>Total</span>
-                            <span className="text-lg text-blue-600">£{priceBreakdown.total}</span>
+                            <span className="text-lg text-blue-600">£{finalTotal}</span>
                           </div>
                         </div>
-                        <input type="hidden" name="totalPrice" value={priceBreakdown.total} />
+                        <input type="hidden" name="totalPrice" value={finalTotal} />
                         <input type="hidden" name="addons" value={selectedAddons.join(", ")} />
                       </div>
                     )}
