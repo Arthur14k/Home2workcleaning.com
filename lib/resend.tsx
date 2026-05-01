@@ -146,6 +146,39 @@ export function createBookingConfirmationEmail(data: any) {
     ? `<p><strong>Add-ons:</strong> ${data.addons}</p>`
     : ''
 
+  // Payment details section for residential bookings only
+  const paymentDetailsHtml = !isCommercial && data.totalPrice
+    ? `
+        <div style="background: #dbeafe; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #3b82f6;">
+          <h3 style="margin-top: 0; color: #1e40af;">Payment Options</h3>
+          <p style="color: #1e3a8a;">Please complete your payment using one of the methods below:</p>
+          
+          <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+            <p style="margin: 0 0 10px 0; font-weight: 600; color: #1e40af;">Option 1: Pay with PayPal</p>
+            <a href="https://paypal.me/Home2WorkCleaning/${data.totalPrice}GBP" 
+               style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+              Pay £${data.totalPrice} with PayPal
+            </a>
+          </div>
+          
+          <div style="background: white; padding: 15px; border-radius: 6px;">
+            <p style="margin: 0 0 10px 0; font-weight: 600; color: #1e40af;">Option 2: Bank Transfer</p>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 4px 0; color: #6b7280;">Account Name:</td><td style="padding: 4px 0; font-weight: 600;">Home2Work Cleaning</td></tr>
+              <tr><td style="padding: 4px 0; color: #6b7280;">Sort Code:</td><td style="padding: 4px 0; font-weight: 600;">07-09-76</td></tr>
+              <tr><td style="padding: 4px 0; color: #6b7280;">Account Number:</td><td style="padding: 4px 0; font-weight: 600;">07775894</td></tr>
+              <tr><td style="padding: 4px 0; color: #6b7280;">Amount:</td><td style="padding: 4px 0; font-weight: 600;">£${data.totalPrice}</td></tr>
+              <tr><td style="padding: 4px 0; color: #6b7280;">Reference:</td><td style="padding: 4px 0; font-weight: 600; color: #2563eb;">${data.firstName} ${data.lastName}</td></tr>
+            </table>
+          </div>
+          
+          <p style="margin: 15px 0 0 0; font-size: 14px; color: #1e3a8a;">
+            <strong>Note:</strong> Your booking will be confirmed once payment is received.
+          </p>
+        </div>
+      `
+    : ''
+
   return {
     to: data.email,
     from: process.env.NOTIFY_FROM!,
@@ -171,6 +204,8 @@ export function createBookingConfirmationEmail(data: any) {
           ${addonsHtml}
           ${totalPriceHtml}
         </div>
+
+        ${paymentDetailsHtml}
 
         <p>If you have any questions, please do not hesitate to contact us.</p>
 
