@@ -78,9 +78,27 @@ export default function TestimonialsPage() {
                   ))}
                 </div>
                 <Quote className="h-6 w-6 text-blue-200 mb-2" />
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-700 leading-relaxed mb-4">
                   I booked the standard cleaning service as recommended by a friend and I was very pleased with the work they did. The team was very professional and left my home spotless. I too would recommend them.
                 </p>
+                {/* Customer Photos */}
+                <div className="grid grid-cols-3 gap-2 mt-4">
+                  <img 
+                    src="https://lh3.googleusercontent.com/grass-cs/ANxoTn0m4IcshjY7pr1Y_artEc8_dSUeE3UlNdMdwuFIOnMCNzW_a1QrtKO1_HqkEBA1chIbby020IebDs-64nLDoXe6e0t4d348iuzQhbnNWUYp7Zl3WPhKv62r2yL432du_kRGZfXn6uqOJHFT" 
+                    alt="Cleaning result - staircase" 
+                    className="w-full h-24 object-cover rounded-md"
+                  />
+                  <img 
+                    src="https://lh3.googleusercontent.com/grass-cs/ANxoTn0dyV1BqE4ZZiXvSIa6WWnmQ1Z8gmU234Q3dWimkeG_h_8gefO8cVqf06kV4NuIp36-CcwN98QEb623L0MN0ozsLNDzKHiJXd52HlVxYg3lG1rr7O5yZ_aReIUmC6ss-lh0irxlE2vnwuq8" 
+                    alt="Cleaning result - storage area" 
+                    className="w-full h-24 object-cover rounded-md"
+                  />
+                  <img 
+                    src="https://lh3.googleusercontent.com/grass-cs/ANxoTn1JglTQkWStiRHQkqK93dKZ97fDC4JxLnq9QlXxGx7vRy_2fWWe4UMD-hzrt4ySeSgjxShLAxgie_5sioZ4W21xuRxyUHYgkDxoUxZCDbiq-PhPXhCONiJVWV0HCo66MejCwC6sUr7PaGXL" 
+                    alt="Cleaning result - room" 
+                    className="w-full h-24 object-cover rounded-md"
+                  />
+                </div>
               </CardContent>
             </Card>
 
