@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   description: "Professional residential and commercial cleaning services in Ireland",
   generator: "v0.dev",
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: "/favicon.png",
+    apple: "/favicon.png",
   },
 }
 
