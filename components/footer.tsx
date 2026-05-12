@@ -1,3 +1,4 @@
+// Footer component for Home2Work Cleaning website
 import Link from "next/link"
 import { Phone, Mail, Instagram, Facebook } from "lucide-react"
 
