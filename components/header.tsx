@@ -7,7 +7,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu } from "lucide-react"
 
 // Header component for Home2Work Cleaning website
-// Last updated: 2026-05-12
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
 

@@ -1,5 +1,4 @@
 // Footer component for Home2Work Cleaning website
-// Last updated: 2026-05-12
 import Link from "next/link"
 import { Phone, Mail, Instagram, Facebook } from "lucide-react"
 
