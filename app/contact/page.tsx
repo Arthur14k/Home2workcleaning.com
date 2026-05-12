@@ -9,5 +9,6 @@ export const metadata: Metadata = {
 }
 
 export default function ContactPage() {
-  return <ContactPageClient />
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""
+  return <ContactPageClient recaptchaSiteKey={recaptchaSiteKey} />
 }

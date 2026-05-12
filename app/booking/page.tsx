@@ -9,5 +9,6 @@ export const metadata: Metadata = {
 }
 
 export default function BookingPage() {
-  return <BookingPageClient />
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""
+  return <BookingPageClient recaptchaSiteKey={recaptchaSiteKey} />
 }

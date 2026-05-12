@@ -1,12 +1,30 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { sendEmail, createContactNotificationEmail, createContactConfirmationEmail } from "@/lib/resend"
 import { createClient } from "@/lib/supabase/server"
+import { verifyRecaptcha } from "@/lib/recaptcha"
 
 export async function POST(request: NextRequest) {
   try {
     console.log("[v0] Contact API called")
 
     const formData = await request.formData()
+
+    // Verify reCAPTCHA
+    const recaptchaToken = formData.get("recaptchaToken")?.toString()
+    if (!recaptchaToken) {
+      return NextResponse.json(
+        { success: false, message: "Please complete the reCAPTCHA verification." },
+        { status: 400 }
+      )
+    }
+
+    const recaptchaResult = await verifyRecaptcha(recaptchaToken)
+    if (!recaptchaResult.success) {
+      return NextResponse.json(
+        { success: false, message: "reCAPTCHA verification failed. Please try again." },
+        { status: 400 }
+      )
+    }
 
     const contactData = {
       firstName: formData.get("firstName") as string,

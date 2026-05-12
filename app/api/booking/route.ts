@@ -7,10 +7,28 @@ import {
   createBookingNotificationEmail,
   createBookingConfirmationEmail,
 } from "@/lib/resend"
+import { verifyRecaptcha } from "@/lib/recaptcha"
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData()
+
+    // Verify reCAPTCHA
+    const recaptchaToken = formData.get("recaptchaToken")?.toString()
+    if (!recaptchaToken) {
+      return NextResponse.json(
+        { success: false, message: "Please complete the reCAPTCHA verification." },
+        { status: 400 }
+      )
+    }
+
+    const recaptchaResult = await verifyRecaptcha(recaptchaToken)
+    if (!recaptchaResult.success) {
+      return NextResponse.json(
+        { success: false, message: "reCAPTCHA verification failed. Please try again." },
+        { status: 400 }
+      )
+    }
 
     // Required fields (form uses camelCase)
     const service_type = formData.get("serviceType")?.toString()

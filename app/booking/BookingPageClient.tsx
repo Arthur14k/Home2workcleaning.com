@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useCallback } from "react"
 import { Calendar, Clock, CheckCircle2, Phone, Mail, Home, Building2, X } from "lucide-react"
+import ReCAPTCHA from "react-google-recaptcha"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -77,7 +78,11 @@ interface BookingConfirmation {
   serviceType: string
 }
 
-export default function BookingPageClient() {
+interface BookingPageClientProps {
+  recaptchaSiteKey: string
+}
+
+export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClientProps) {
   const [submitStatus, setSubmitStatus] = useState({
     type: null as "success" | "error" | null,
     message: "",
@@ -99,6 +104,13 @@ export default function BookingPageClient() {
   // Commercial form state
   const [businessType, setBusinessType] = useState("")
   const [floors, setFloors] = useState("")
+  
+  // reCAPTCHA state
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  
+  const onRecaptchaChange = useCallback((token: string | null) => {
+    setRecaptchaToken(token)
+  }, [])
 
   // Calculate total price for residential
   const priceBreakdown = useMemo(() => {
@@ -198,11 +210,21 @@ export default function BookingPageClient() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    
+    // Validate reCAPTCHA
+    if (!recaptchaToken) {
+      setSubmitStatus({ type: "error", message: "Please complete the reCAPTCHA verification." })
+      return
+    }
+    
     setIsSubmitting(true)
 
     try {
       const form = event.currentTarget
       const formData = new FormData(form)
+      
+      // Add reCAPTCHA token
+      formData.set("recaptchaToken", recaptchaToken)
       
       // Add calculated total for residential
       if (serviceType === "Residential" && priceBreakdown) {
@@ -891,10 +913,20 @@ export default function BookingPageClient() {
                       </div>
                     )}
 
+                    {/* reCAPTCHA */}
+                    {serviceType && (
+                      <div className="flex justify-center">
+                        <ReCAPTCHA
+                          sitekey={recaptchaSiteKey}
+                          onChange={onRecaptchaChange}
+                        />
+                      </div>
+                    )}
+
                     {/* Submit */}
                     {serviceType && (
                       <>
-                        <Button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-700" size="lg">
+                        <Button type="submit" disabled={isSubmitting || !recaptchaToken} className="w-full bg-blue-600 hover:bg-blue-700" size="lg">
                           {isSubmitting 
                             ? "Submitting..." 
                             : serviceType === "Commercial" 

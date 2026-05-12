@@ -1,7 +1,8 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useCallback } from "react"
+import ReCAPTCHA from "react-google-recaptcha"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,21 +12,40 @@ import { Phone, Mail, Clock, CheckCircle, AlertCircle } from "lucide-react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 
-export default function ContactPageClient() {
+interface ContactPageClientProps {
+  recaptchaSiteKey: string
+}
+
+export default function ContactPageClient({ recaptchaSiteKey }: ContactPageClientProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<{
     type: "success" | "error" | null
     message: string
   }>({ type: null, message: "" })
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+
+  const onRecaptchaChange = useCallback((token: string | null) => {
+    setRecaptchaToken(token)
+  }, [])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    
+    // Validate reCAPTCHA
+    if (!recaptchaToken) {
+      setSubmitStatus({ type: "error", message: "Please complete the reCAPTCHA verification." })
+      return
+    }
+    
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: "" })
 
     try {
       const form = event.currentTarget
       const formData = new FormData(form)
+      
+      // Add reCAPTCHA token
+      formData.set("recaptchaToken", recaptchaToken)
 
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -246,7 +266,14 @@ export default function ContactPageClient() {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
+                  <div className="flex justify-center">
+                    <ReCAPTCHA
+                      sitekey={recaptchaSiteKey}
+                      onChange={onRecaptchaChange}
+                    />
+                  </div>
+
+                  <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting || !recaptchaToken}>
                     {isSubmitting ? "Sending Message..." : "Send Message"}
                   </Button>
 
