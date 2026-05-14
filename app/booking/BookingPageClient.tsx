@@ -788,6 +788,17 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
                                   <option value="17:00 PM - 20:00 PM">17:00 PM - 20:00 PM</option>
                                   <option value="20:00 PM - 23:00 PM">20:00 PM - 23:00 PM</option>
                                 </>
+                              ) : cleaningType === "Deep Cleaning" ? (
+                                <>
+                                  <option value="8:00 AM - 12:00 PM">8:00 AM - 12:00 PM</option>
+                                  <option value="12:00 PM - 16:00 PM">12:00 PM - 16:00 PM</option>
+                                  <option value="16:00 PM - 20:00 PM">16:00 PM - 20:00 PM</option>
+                                </>
+                              ) : cleaningType === "End of Tenancy" || cleaningType === "Move In/Out" ? (
+                                <>
+                                  <option value="8:00 AM - 13:00 PM">8:00 AM - 13:00 PM</option>
+                                  <option value="13:00 PM - 18:00 PM">13:00 PM - 18:00 PM</option>
+                                </>
                               ) : (
                                 <>
                                   <option value="8:00 AM - 11:00 AM">8:00 AM - 11:00 AM</option>
