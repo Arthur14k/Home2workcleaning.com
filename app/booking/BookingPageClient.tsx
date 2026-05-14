@@ -97,6 +97,7 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
   const [bathrooms, setBathrooms] = useState("")
   const [frequency, setFrequency] = useState("One-time service")
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
+  const [ownEquipment, setOwnEquipment] = useState("")
   const [promoCode, setPromoCode] = useState("")
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; discount: number; description: string } | null>(null)
   const [promoError, setPromoError] = useState("")
@@ -162,8 +163,14 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
       }
     })
 
+    // Apply own equipment discount (Standard Cleaning only)
+    if (cleaningType === "Standard Cleaning" && ownEquipment === "Yes") {
+      items.push({ label: "Own Equipment Discount", price: -10 })
+      total -= 10
+    }
+
     return { items, total }
-  }, [serviceType, cleaningType, rooms, bathrooms, frequency, selectedAddons])
+  }, [serviceType, cleaningType, rooms, bathrooms, frequency, selectedAddons, ownEquipment])
 
   const toggleAddon = (addon: string) => {
     setSelectedAddons((prev) =>
@@ -268,6 +275,7 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
         setBathrooms("")
         setFrequency("One-time service")
         setSelectedAddons([])
+        setOwnEquipment("")
         setPromoCode("")
         setAppliedPromo(null)
         setPromoError("")
@@ -586,6 +594,7 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
                                   setCleaningType(e.target.value)
                                   if (e.target.value !== "Standard Cleaning") {
                                     setSelectedAddons([])
+                                    setOwnEquipment("")
                                   }
                                 }}
                                 className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -810,6 +819,25 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
                             </select>
                           </div>
                         </div>
+                      </div>
+                    )}
+
+                    {/* Own Equipment Question - Standard Cleaning Only */}
+                    {serviceType === "Residential" && cleaningType === "Standard Cleaning" && (
+                      <div>
+                        <label className="block text-sm font-semibold mb-1">Will You Be Providing Your Own Cleaning Equipment?</label>
+                        <p className="text-xs text-gray-500 mb-2">Select &quot;Yes&quot; to receive a £10 discount on your service</p>
+                        <select 
+                          name="ownEquipment" 
+                          value={ownEquipment}
+                          onChange={(e) => setOwnEquipment(e.target.value)}
+                          required 
+                          className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="">Select an option</option>
+                          <option value="Yes">Yes - I will provide my own equipment (£10 discount)</option>
+                          <option value="No">No - Please bring cleaning equipment</option>
+                        </select>
                       </div>
                     )}
 
