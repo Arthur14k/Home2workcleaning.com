@@ -83,9 +83,11 @@ export function createBookingNotificationEmail(data: any) {
     : ''
 
   const commercialFieldsHtml = isCommercial 
-    ? `<tr><td style="padding: 8px 0; color: #6b7280;">Business Type:</td><td style="padding: 8px 0; font-weight: 600;">${data.businessType || 'N/A'}</td></tr>
-       <tr><td style="padding: 8px 0; color: #6b7280;">Floors:</td><td style="padding: 8px 0;">${data.floors || 'N/A'}</td></tr>`
-    : ''
+  ? `<tr><td style="padding: 8px 0; color: #6b7280;">Business Type:</td><td style="padding: 8px 0; font-weight: 600;">${data.businessType || 'N/A'}</td></tr>
+  <tr><td style="padding: 8px 0; color: #6b7280;">Floors:</td><td style="padding: 8px 0;">${data.floors || 'N/A'}</td></tr>
+  <tr><td style="padding: 8px 0; color: #6b7280;">Kitchens:</td><td style="padding: 8px 0;">${data.kitchens || 'N/A'}</td></tr>
+  <tr><td style="padding: 8px 0; color: #6b7280;">Communal Areas:</td><td style="padding: 8px 0;">${data.communalAreas || 'N/A'}</td></tr>`
+  : ''
 
   return {
     to: process.env.NOTIFY_TO!,

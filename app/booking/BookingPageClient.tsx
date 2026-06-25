@@ -38,22 +38,22 @@ const PRICING = {
   },
   rooms: {
     "1-2 rooms": 0,
-    "3-4 rooms": 25,
+    "3-4 rooms": 20,
     "5+ rooms": 45,
   },
   bathrooms: {
     "1": 0,
-    "2": 20,
-    "3": 25,
-    "4": 30,
-    "5+": 65,
+    "2": 0,
+    "3": 10,
+    "4": 20,
+    "5+": 30,
   },
   addons: {
     "Oven Clean": 15,
     "Fridge Clean": 10,
     "Inside Cabinet": 5,
-    "Interior Windows": 15,
-    "Carpet Clean": 40,
+    "Interior Windows": 10,
+    "Carpet Clean": 30,
   },
 }
 
@@ -720,9 +720,16 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
                                 className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
                                 <option value="">Select</option>
-                                <option value="1-2 rooms">1-2</option>
-                                <option value="3-4 rooms">3-4</option>
-                                <option value="5+ rooms">5+</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10+">10+</option>
                               </select>
                             </div>
                             <div>
@@ -756,7 +763,54 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
                                 <option value="2">2</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
-                                <option value="5+">5+</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10+">10+</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm mb-1">Number of Kitchens *</label>
+                              <select 
+                                name="kitchens" 
+                                required 
+                                className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              >
+                                <option value="">Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10+">10+</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-sm mb-1">Number of Communal Areas *</label>
+                              <select 
+                                name="communalAreas" 
+                                required 
+                                className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              >
+                                <option value="">Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10+">10+</option>
                               </select>
                             </div>
                           </div>

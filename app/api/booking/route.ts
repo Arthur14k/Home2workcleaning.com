@@ -53,6 +53,8 @@ export async function POST(req: Request) {
       : null
     const business_type = formData.get("businessType")?.toString() || null
     const floors = formData.get("floors")?.toString() || null
+    const kitchens = formData.get("kitchens")?.toString() || null
+    const communal_areas = formData.get("communalAreas")?.toString() || null
 
     const property_size = formData.get("propertySize")
       ? Number(formData.get("propertySize"))
@@ -142,6 +144,8 @@ export async function POST(req: Request) {
         totalPrice: total_price,
         businessType: business_type,
         floors,
+        kitchens,
+        communalAreas: communal_areas,
       }
 
       await sendEmail(createBookingNotificationEmail(bookingData))
