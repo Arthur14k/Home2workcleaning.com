@@ -42,8 +42,7 @@ const PRICING = {
     "5+ rooms": 45,
   },
   bathrooms: {
-    "1": 0,
-    "2": 0,
+    "1-2": 0,
     "3": 10,
     "4": 20,
     "5+": 30,
@@ -632,8 +631,7 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
                                   className="w-full border border-input bg-background p-2.5 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                   <option value="">Select bathrooms</option>
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
+                                  <option value="1-2">1-2</option>
                                   <option value="3">3</option>
                                   <option value="4">4</option>
                                   <option value="5+">5+</option>
