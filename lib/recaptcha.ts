@@ -22,8 +22,9 @@ export async function verifyRecaptcha(token: string): Promise<{ success: boolean
     if (data.success) {
       return { success: true }
     } else {
-      console.error("reCAPTCHA verification failed:", data["error-codes"])
-      return { success: false, error: "reCAPTCHA verification failed" }
+      const codes = data["error-codes"] || []
+      console.error("[v0] reCAPTCHA verification failed. error-codes:", codes, "hostname:", data.hostname)
+      return { success: false, error: `reCAPTCHA verification failed: ${codes.join(", ") || "unknown"}` }
     }
   } catch (error) {
     console.error("reCAPTCHA verification error:", error)

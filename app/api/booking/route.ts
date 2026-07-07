@@ -110,6 +110,8 @@ export async function POST(req: Request) {
       total_price,
       business_type,
       floors,
+      kitchens,
+      communal_areas,
     })
 
     if (error) {
