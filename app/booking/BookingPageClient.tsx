@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
+  import { useState, useMemo, useCallback, useRef } from "react"
 import { Calendar, Clock, CheckCircle2, Phone, Mail, Home, Building2, X } from "lucide-react"
 import ReCAPTCHA from "react-google-recaptcha"
 import Header from "@/components/header"
@@ -107,9 +107,15 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
   
   // reCAPTCHA state
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
-  
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
+
   const onRecaptchaChange = useCallback((token: string | null) => {
     setRecaptchaToken(token)
+  }, [])
+
+  const resetRecaptcha = useCallback(() => {
+    recaptchaRef.current?.reset()
+    setRecaptchaToken(null)
   }, [])
 
   // Calculate total price for residential
@@ -280,12 +286,15 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
         setPromoError("")
         setBusinessType("")
         setFloors("")
+        resetRecaptcha()
       } else {
         setSubmitStatus({ type: "error", message: result.message || "Something went wrong." })
+        resetRecaptcha()
       }
     } catch (error) {
       console.error("Booking submission error:", error)
       setSubmitStatus({ type: "error", message: "Network error. Please check your connection." })
+      resetRecaptcha()
     } finally {
       setIsSubmitting(false)
     }
@@ -1007,10 +1016,12 @@ export default function BookingPageClient({ recaptchaSiteKey }: BookingPageClien
                     {/* reCAPTCHA */}
                     {serviceType && (
                       <div className="flex justify-center">
-                        <ReCAPTCHA
-                          sitekey={recaptchaSiteKey}
-                          onChange={onRecaptchaChange}
-                        />
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={recaptchaSiteKey}
+                    onChange={onRecaptchaChange}
+                    onExpired={() => setRecaptchaToken(null)}
+                  />
                       </div>
                     )}
 

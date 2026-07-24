@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useCallback } from "react"
+ import { useState, useCallback, useRef } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -23,9 +23,15 @@ export default function ContactPageClient({ recaptchaSiteKey }: ContactPageClien
     message: string
   }>({ type: null, message: "" })
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const onRecaptchaChange = useCallback((token: string | null) => {
     setRecaptchaToken(token)
+  }, [])
+
+  const resetRecaptcha = useCallback(() => {
+    recaptchaRef.current?.reset()
+    setRecaptchaToken(null)
   }, [])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -60,11 +66,13 @@ export default function ContactPageClient({ recaptchaSiteKey }: ContactPageClien
           message: result.message,
         })
         form.reset()
+        resetRecaptcha()
       } else {
         setSubmitStatus({
           type: "error",
           message: result.message || "Something went wrong. Please try again.",
         })
+        resetRecaptcha()
       }
     } catch (error) {
       console.error("Form submission error:", error)
@@ -72,6 +80,7 @@ export default function ContactPageClient({ recaptchaSiteKey }: ContactPageClien
         type: "error",
         message: "Network error. Please check your connection and try again.",
       })
+      resetRecaptcha()
     } finally {
       setIsSubmitting(false)
     }
@@ -268,8 +277,10 @@ export default function ContactPageClient({ recaptchaSiteKey }: ContactPageClien
 
                   <div className="flex justify-center">
                     <ReCAPTCHA
+                      ref={recaptchaRef}
                       sitekey={recaptchaSiteKey}
                       onChange={onRecaptchaChange}
+                      onExpired={() => setRecaptchaToken(null)}
                     />
                   </div>
 
